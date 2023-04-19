@@ -11,7 +11,14 @@ def generate_keys():
     pbc_ser = public_key.public_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PublicFormat.SubjectPublicKeyInfo)
-    return private_key, pbc_ser
+    
+    pve_ser = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption()
+    )
+
+    return pve_ser, pbc_ser
 
 def sign(message, private_key):
     message = bytes(str(message), 'utf-8')
