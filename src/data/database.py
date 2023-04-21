@@ -56,12 +56,30 @@ class Database:
             {"username": username, "password": hash_password, "private_key": private_key, "public_key": public_key})
         self.commit()
 
-    def computeHash(self):
-        password = "123"
-        digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
-        digest.update(bytes(str(password),'utf8'))
-        return digest.finalize()
+    def create_user(self, username, password):
+        private_key, public_key = generate_keys()
+        private_key = private_key.decode("utf-8")
+        public_key = public_key.decode("utf-8")
+        username = username
+        password = password.encode('UTF-8')
+        salt = bcrypt.gensalt()
+        hash_password = bcrypt.hashpw(password, salt)
 
+        self.cursor.execute(
+            "INSERT INTO users VALUES (:username, :password,:private_key,:public_key)",
+            {"username": username, "password": hash_password, "private_key": private_key, "public_key": public_key})
+        self.commit()
+
+
+    def login(self, username, password):
+        query = f"SELECT * FROM users WHERE username = ?"
+        result = self.cursor.execute(query, (username,)).fetchone()
+
+        db_password = result[1]
+        hashed_password = password.encode('UTF-8')
+        
+        return bcrypt.hashpw(hashed_password, db_password) == db_password
+            
     def check_migrations(self):
         # Make and fill database
         try:
@@ -70,6 +88,5 @@ class Database:
                 "NULL, 'private_key' VARCHAR NOT NULL, 'public_key' VARCHAR NOT NULL )")
         except:
             Exception("Error while creating tables")
-        self.create_super_admin()
         self.open("userDatabase.db")
         self.commit()

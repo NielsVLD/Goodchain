@@ -1,41 +1,45 @@
 from data.database import *
-from Login import *
+from Login import sign_up, login
 
 
 class UserInterface:
     def main_screen(self):
         choice: int = self.choices(["Login", "Explore the blockchain", "Sign up", "Exit"])
         if choice == 1:
-            self.logged_in_screen()
+           if(login()):
+               self.logged_in_screen()
+           else:
+               self.main_screen()
         if choice == 2:
             print("Needs to be done")
         if choice == 3:
-            print("Needs to be done")
+            sign_up()
         if choice == 4:
             exit("Goodbye")
         else:
             self.main_screen()
 
     def logged_in_screen(self):
-        choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Mine a block", "Logout", "Exit"])
-        if choice == 1:
-            print("Needs to be done")
-        if choice == 2:
-            print("Needs to be done")
-        if choice == 3:
-            print("Needs to be done")
-        if choice == 4:
-            print("Needs to be done")
-        if choice == 5:
-            print("Needs to be done")
-        if choice == 6:
-            print("Needs to be done")
-        if choice == 7:
-            print("Needs to be done")
-        if choice == 8:
-            print("Needs to be done")
-        else:
-            self.logged_in_screen
+        while True:
+            choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Mine a block", "Logout", "Exit"])
+            if choice == 1:
+                print("Needs to be done")
+            if choice == 2:
+                print("Needs to be done")
+            if choice == 3:
+                print("Needs to be done")
+            if choice == 4:
+                print("Needs to be done")
+            if choice == 5:
+                print("Needs to be done")
+            if choice == 6:
+                print("Needs to be done")
+            if choice == 7:
+                print("Needs to be done")
+            if choice == 8:
+                exit("Goodbye")
+            else:
+                self.logged_in_screen
 
 
 
