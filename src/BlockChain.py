@@ -1,15 +1,18 @@
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
-
+import uuid
 class CBlock:
 
     data = None
     previousHash = None
     previousBlock = None
+    blockId = None
+
     def __init__(self, data, previousBlock):
         self.data = data
         self.blockHash = None
         self.previousBlock = previousBlock
+        self.blockId = uuid.uuid1()
         if previousBlock != None:
             self.previousHash = previousBlock.computeHash()
     

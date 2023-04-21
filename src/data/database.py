@@ -80,6 +80,13 @@ class Database:
         
         return bcrypt.hashpw(hashed_password, db_password) == db_password
             
+    def get_credentials(self, username):
+        query = f"SELECT private_key, public_key FROM users WHERE username = ?"
+        result = self.cursor.execute(query, (username,))
+        self.commit()
+
+        return result
+
     def check_migrations(self):
         # Make and fill database
         try:

@@ -1,15 +1,14 @@
 from data.database import *
 from Login import sign_up, login
-
+from userActions import TransferCoins
 
 class UserInterface:
     def main_screen(self):
         choice: int = self.choices(["Login", "Explore the blockchain", "Sign up", "Exit"])
         if choice == 1:
-           if(login()):
-               self.logged_in_screen()
-           else:
-               self.main_screen()
+               user = login(self)
+               if(user):
+                   self.logged_in_screen(user)
         if choice == 2:
             print("Needs to be done")
         if choice == 3:
@@ -19,11 +18,12 @@ class UserInterface:
         else:
             self.main_screen()
 
-    def logged_in_screen(self):
+    def logged_in_screen(self, user):
         while True:
             choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Mine a block", "Logout", "Exit"])
             if choice == 1:
-                print("Needs to be done")
+                print(f"User: {user} is logged in" )
+                TransferCoins.transferCoins(user)
             if choice == 2:
                 print("Needs to be done")
             if choice == 3:
