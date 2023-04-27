@@ -2,6 +2,7 @@ from database import *
 from Login import Login
 from userActions import TransferCoins
 from Helper import Helper
+from Daemon import Daemon
 class UserInterface:
     def main_screen(self):
         choice: int = self.choices(["Login", "Explore the blockchain", "Sign up", "Exit"])
@@ -19,8 +20,13 @@ class UserInterface:
             self.main_screen()
 
     def logged_in_screen(self, user):
+        # Automatic stuff
+
+        Daemon().remove_invalid_transactions_from_pool(user)
+
+
         while True:
-            choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "See history of transactions", "Mine a block", "See credentials", "Logout", "Exit"])
+            choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Modify an transaction in the pool", "See history of transactions", "Mine a block", "See credentials", "Logout", "Exit"])
             if choice == 1:
                 print(f"User: {user} is logged in" )
                 TransferCoins.transferCoins(user).transfer_coins_ui()
@@ -34,14 +40,16 @@ class UserInterface:
             if choice == 5:
                 TransferCoins.transferCoins(user).cancel_transaction_in_pool()
             if choice == 6:
-                Helper().see_history_transactions(user)
+                TransferCoins.transferCoins(user).modify_transaction_in_pool()
             if choice == 7:
-                print("Needs to be done")
+                 Helper().see_history_transactions(user)
             if choice == 8:
                 print("Needs to be done")
             if choice == 9:
                 print("Needs to be done")
             if choice == 10:
+                print("Needs to be done")
+            if choice == 11:
                 exit("Goodbye")
             else:
                 self.logged_in_screen

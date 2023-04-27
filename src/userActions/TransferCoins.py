@@ -133,3 +133,52 @@ class transferCoins:
                         pickle.dump(transaction, file2)
         else:       
             print("Pool is empty, cannot cancel a transaction\n")
+
+    def modify_transaction_in_pool(self):
+        if not Helper().is_pool_empty():
+            sender_prv, sender_pbc = self.get_sender_credentials()
+            transactions = []
+            transactions_to_update = []
+            index = 0
+            file = open(self.path_pool, "rb")
+            try:
+                while True:
+                    data = pickle.load(file)
+                    transactions.append(data)
+                    transactions_to_update.append(data.inputs)
+
+            except:
+                pass
+            
+            for transaction in transactions:
+                print(f"Transaction {index}: \n {transaction}")
+                index += 1
+            
+            while True:
+                try:
+                    num = int(input("What transaction do you want to update?: "))
+                except:
+                    print("Choose a number from the list\n")
+                    continue
+                index = 0
+                if type(num) == int and num < len(transactions):
+                    if transactions_to_update[num][0][0] == sender_pbc:
+                        receiver = input("What is the username of the receiver of the transaction?: ")
+                        amount = float(input("What is the amount to be send?: "))
+                        transaction_fee = float(input("What is the transaction fee?: "))
+                        transaction = self.create_transaction(receiver, amount, transaction_fee)
+                        
+                        with open(self.path_pool, 'rb') as file:
+                            variable_dict = pickle.load(file)
+
+                        variable_dict[num] = transaction
+                        with open('variables.pkl', 'wb') as file:
+                            pickle.dumps(variable_dict, file)
+                    else:
+                        print("You can only update your own transactions\n")
+                    break
+                else:
+                    print("Choose a number from the list\n")
+                    continue
+        else:       
+            print("Pool is empty, cannot cancel a transaction\n")

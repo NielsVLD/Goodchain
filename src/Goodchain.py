@@ -19,5 +19,5 @@ if __name__ == "__main__":
     database.check_migrations()
     database.close()
 
-    #UserInterface().main_screen()
+    UserInterface().main_screen()
     UserInterface().logged_in_screen("niels")
