@@ -7,10 +7,10 @@ class CBlock:
     previousHash = None
     previousBlock = None
     blockId = None
+    blockHash = None
 
     def __init__(self, data, previousBlock):
         self.data = data
-        self.blockHash = None
         self.previousBlock = previousBlock
         self.blockId = uuid.uuid1()
         if previousBlock != None:

@@ -1,7 +1,8 @@
 from gzip import READ
 from operator import truediv
 from optparse import AmbiguousOptionError
-
+from database import *
+import uuid
 REWARD_VALUE = 25.0
 NORMAL = 0
 REWARD = 1
@@ -16,6 +17,9 @@ class Tx:
         self.outputs = []
         self.sigs = []
         self.reqd = []
+        self.isValidTx = []
+        self.username = []
+        self.txid = uuid.uuid1()
 
     def add_input(self, from_addr, amount):
         self.inputs.append((from_addr, amount))
@@ -25,6 +29,12 @@ class Tx:
 
     def add_reqd(self, addr):
         self.reqd.append(addr)
+    
+    def add_username(self, username):
+        self.username.append(username)
+    
+    def add_status(self, status):
+        self.isValidTx.append(status)
 
     def sign(self, private):
         message = self.__gather()
@@ -32,7 +42,6 @@ class Tx:
         self.sigs.append(newsig)
                
     def is_valid(self):
-
         if self.type == REWARD:
             if len(self.inputs)!=0 and len(self.outputs)!=1:
                 return False
@@ -73,16 +82,17 @@ class Tx:
         data.append(self.inputs)
         data.append(self.outputs)
         data.append(self.reqd)
+        data.append(self.isValidTx)
         return data
 
     def __repr__(self):
         repr_str = "INPUTS:\n"
         for addr, amt in self.inputs:
-            repr_str = repr_str + str(amt) + "from" + str(addr) + "\n"
+            repr_str = repr_str + str(amt) + " from " + self.get_username(addr.decode("UTF-8")) + "\n"
 
         repr_str += "OUTPUTS:\n"
         for addr, amt in self.outputs:
-            repr_str = repr_str + str(amt) + "to" + str(addr) + "\n"
+            repr_str = repr_str + str(amt) + " to " + self.get_username(addr.decode("UTF-8")) + "\n"
 
         repr_str += "EXTRA REQUIRED SIGNATURES:\n"     
         for req_sig in self.reqd:
@@ -95,3 +105,8 @@ class Tx:
         repr_str += "END\n"
         
         return repr_str
+
+    def get_username(self, pbc):
+        database = Database("userDatabase.db")
+        result = database.get_username_by_pbc(pbc)
+        return result

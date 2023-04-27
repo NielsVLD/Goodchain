@@ -14,7 +14,7 @@ class Database:
     
     def open(self, name):
         try:
-            self.conn = sqlite3.connect(name)
+            self.conn = sqlite3.connect(f"data/{name}")
             self.cursor = self.conn.cursor()
         except sqlite3.Error as e:
             print("Error connecting to database!")
@@ -60,7 +60,6 @@ class Database:
         private_key, public_key = generate_keys()
         private_key = private_key.decode("utf-8")
         public_key = public_key.decode("utf-8")
-        username = username
         password = password.encode('UTF-8')
         salt = bcrypt.gensalt()
         hash_password = bcrypt.hashpw(password, salt)
@@ -82,10 +81,17 @@ class Database:
             
     def get_credentials(self, username):
         query = f"SELECT private_key, public_key FROM users WHERE username = ?"
-        result = self.cursor.execute(query, (username,))
-        self.commit()
-
+        result = self.cursor.execute(query, (username,)).fetchone()
         return result
+    
+    def is_unique_username(self, username):
+        query = f"SELECT username FROM users WHERE username = ?"
+        result = self.cursor.execute(query, (username,)).fetchone()
+
+        if(result == None):
+            return True
+        else:
+            return False
 
     def check_migrations(self):
         # Make and fill database
@@ -97,3 +103,8 @@ class Database:
             Exception("Error while creating tables")
         self.open("userDatabase.db")
         self.commit()
+
+    def get_username_by_pbc(self, pbc):
+        query = f"SELECT username FROM users WHERE public_key = ?"
+        result = self.cursor.execute(query, (pbc,)).fetchone()
+        return result[0]

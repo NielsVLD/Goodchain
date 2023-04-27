@@ -1,15 +1,15 @@
-from data.database import *
+from database import *
 
 class Login:
-        def __init__(self, connection, username, password):
-                self.connection = connection
-                self.username = username
-                self.password = password
-
-        def sign_up():
+        def sign_up(self):
                 database = Database("userDatabase.db")
-
-                username = input("What is your username: ")
+                while True:
+                        username = input("What is your username: ")
+                        is_unique = database.is_unique_username(username)
+                        if(is_unique):
+                                break
+                        else:
+                                print("Username is not unique")
                 password = input("What is your password: ")
                 try:
                         database.create_user(username, password)
