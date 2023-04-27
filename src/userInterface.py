@@ -20,7 +20,7 @@ class UserInterface:
 
     def logged_in_screen(self, user):
         while True:
-            choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Mine a block", "See credentials", "Logout", "Exit"])
+            choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "See history of transactions", "Mine a block", "See credentials", "Logout", "Exit"])
             if choice == 1:
                 print(f"User: {user} is logged in" )
                 TransferCoins.transferCoins(user).transfer_coins_ui()
@@ -34,12 +34,14 @@ class UserInterface:
             if choice == 5:
                 TransferCoins.transferCoins(user).cancel_transaction_in_pool()
             if choice == 6:
-                print("Needs to be done")
+                Helper().see_history_transactions(user)
             if choice == 7:
                 print("Needs to be done")
             if choice == 8:
                 print("Needs to be done")
             if choice == 9:
+                print("Needs to be done")
+            if choice == 10:
                 exit("Goodbye")
             else:
                 self.logged_in_screen

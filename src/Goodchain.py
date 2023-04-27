@@ -11,6 +11,7 @@ if __name__ == "__main__":
     pathlib.Path('data').mkdir(parents=True, exist_ok=True)
     pathlib.Path('data/block.dat').touch()
     pathlib.Path('data/pool.dat').touch()
+    pathlib.Path('data/transactionHistory.dat').touch()
     pathlib.Path('data/userDatabase.db').touch()
 
 
@@ -18,5 +19,5 @@ if __name__ == "__main__":
     database.check_migrations()
     database.close()
 
-    UserInterface().main_screen()
-    #UserInterface().logged_in_screen("niels")
+    #UserInterface().main_screen()
+    UserInterface().logged_in_screen("niels")

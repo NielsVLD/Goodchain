@@ -7,6 +7,7 @@ from TxBlock import TxBlock
 from Helper import Helper
 class transferCoins:
     path_pool = 'data/pool.dat'
+    path_transactionHistory = 'data/transactionHistory.dat'
 
     def __init__(self, sender):
         self.sender = sender
@@ -80,11 +81,14 @@ class transferCoins:
         pickle.dump(transaction, file)
         file.close()
 
+        file = open(self.path_transactionHistory, "ab")
+        pickle.dump(transaction, file)
+        file.close()
+
     def cancel_transaction_in_pool(self):
         if not Helper().is_pool_empty():
             sender_prv, sender_pbc = self.get_sender_credentials()
             transactions = []
-            test = [1,2,3]
             transactions_to_delete = []
             index = 0
             file = open(self.path_pool, "rb")
