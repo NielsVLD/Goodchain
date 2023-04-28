@@ -3,6 +3,7 @@ from Login import Login
 from userActions import TransferCoins
 from Helper import Helper
 from Daemon import Daemon
+from userActions.Mine import Mine
 class UserInterface:
     def main_screen(self):
         choice: int = self.choices(["Login", "Explore the blockchain", "Sign up", "Exit"])
@@ -22,7 +23,7 @@ class UserInterface:
     def logged_in_screen(self, user):
         # Automatic stuff
 
-        Daemon().remove_invalid_transactions_from_pool(user)
+        #Daemon().remove_invalid_transactions_from_pool(user)
 
 
         while True:
@@ -34,7 +35,9 @@ class UserInterface:
                 balance = TransferCoins.transferCoins(user).check_balance()
                 print(balance)
             if choice == 3:
-                print("Needs to be done")
+                blockchain = Helper().get_blockchain()
+                for block in blockchain:
+                    print(block.previousBlock)
             if choice == 4:
                 Helper().print_pool()
             if choice == 5:
@@ -44,7 +47,7 @@ class UserInterface:
             if choice == 7:
                  Helper().see_history_transactions(user)
             if choice == 8:
-                print("Needs to be done")
+                Mine(user).mine_ui()
             if choice == 9:
                 print("Needs to be done")
             if choice == 10:

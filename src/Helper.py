@@ -3,6 +3,7 @@ class Helper:
 
     path_pool = 'data/pool.dat'
     path_transactionHistory = 'data/transactionHistory.dat'
+    path_blockchain = 'data/blockchain.dat'
 
     def print_pool(self):
         pool = []
@@ -54,4 +55,26 @@ class Helper:
         print(f"Total transactions made = {total}\n")
 
         
-            
+    def get_pool(self):
+        transactions = []
+        file = open(self.path_pool, "rb")
+        try:
+            while True:
+                data = pickle.load(file)
+                transactions.append(data)
+        except:
+            pass
+        
+        return transactions
+    
+    def get_blockchain(self):
+        blockchain = []
+        file = open(self.path_blockchain, "rb")
+        try:
+            while True:
+                data = pickle.load(file)
+                blockchain.append(data)
+        except:
+            pass
+
+        return blockchain

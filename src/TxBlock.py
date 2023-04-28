@@ -4,7 +4,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
 import random
 
-REWARD_VALUE = 25.0
+REWARD_VALUE = 50
 leading_zeros = 2
 next_char_limit = 20
 

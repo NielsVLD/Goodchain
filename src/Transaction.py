@@ -82,16 +82,19 @@ class Tx:
         data.append(self.inputs)
         data.append(self.outputs)
         data.append(self.reqd)
-        data.append(self.isValidTx)
         return data
 
     def __repr__(self):
+        input_amt = 0
+        output_amt = 0
         repr_str = "INPUTS:\n"
         for addr, amt in self.inputs:
+            input_amt += amt
             repr_str = repr_str + str(amt) + " from " + self.get_username(addr.decode("UTF-8")) + "\n"
 
         repr_str += "OUTPUTS:\n"
         for addr, amt in self.outputs:
+            output_amt += amt
             repr_str = repr_str + str(amt) + " to " + self.get_username(addr.decode("UTF-8")) + "\n"
 
         repr_str += "EXTRA REQUIRED SIGNATURES:\n"     
@@ -101,6 +104,14 @@ class Tx:
         repr_str += "SIGNATURES:\n"     
         for sig in self.sigs:
             repr_str = repr_str + str(sig) + "\n"
+
+        repr_str += "TRANSACTION FEE:\n"     
+        for sig in self.sigs:
+            repr_str = repr_str + str(input_amt - output_amt) + "\n"
+        
+        repr_str += "VALID TRANSACTION:\n"     
+        for sig in self.sigs:
+            repr_str = repr_str + str(self.is_valid()) + "\n"
 
         repr_str += "END\n"
         
