@@ -26,28 +26,62 @@ class Mine:
             if blockchain == []:
                 genesisBlock = TxBlock(None)
                 index = 0
-                while index <= 5:
+                while index < 5:
                     if transactions[index].is_valid():
-                        print("Valid transaction")
                         genesisBlock.addTx(transactions[index])
                         index += 1
                     else: 
                         transactions[index].add_status(False)
+                        genesisBlock.addTx(transactions[index])
                         print("Invalid transaction detected!")
                         index += 1
-                self.add_block_to_blockchain(genesisBlock)
+
+                f1 = open(self.path_pool, 'rb+')
+                f1.seek(0)
+                f1.truncate()
+
+                for transaction in transactions:
+                    file2 = open(self.path_pool, "ab+")
+                    pickle.dump(transaction, file2)
+                
+                #self.add_block_to_blockchain(block)
+                self.mine_block(genesisBlock)
             else:
-                prevBlock = CBlock.previousBlock
-                print(prevBlock)
+                prevBlock = Helper().get_previous_block()
                 block = TxBlock(prevBlock)
                 index = 0
-                while index <= 5:
-                    block.addTx(transactions[index])
-                    index += 1
-                self.add_block_to_blockchain(block)
+                while index < 5:
+                    if transactions[index].is_valid():
+                        block.addTx(transactions[index])
+                        index += 1
+                    else: 
+                        transactions[index].add_status(False)
+                        block.addTx(transactions[index])
+                        print("Invalid transaction detected!")
+                        index += 1
+
+                f1 = open(self.path_pool, 'rb+')
+                f1.seek(0)
+                f1.truncate()
+
+                for transaction in transactions:
+                    file2 = open(self.path_pool, "ab+")
+                    pickle.dump(transaction, file2)
+                
+                #self.add_block_to_blockchain(block)
+                self.mine_block(block)
     
     def add_block_to_blockchain(self, block):
         file = open(self.path_blockchain, "ab+")
         pickle.dump(block, file)
         file.close()
         print("Block added to blockchain")
+
+    def mine_block(self, block):
+            block.mine_block(self.username)
+            self.add_block_to_blockchain(block)
+            for transaction in block.data:
+                Helper().delete_transaction_in_pool(transaction)
+
+
+

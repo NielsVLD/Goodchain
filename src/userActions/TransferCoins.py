@@ -19,7 +19,11 @@ class transferCoins:
             balance = self.check_balance(amount, transaction_fee)
 
             transaction = self.create_transaction(receiver, amount, transaction_fee)
-            self.save_transaction_in_pool(transaction)
+            if transaction == None:
+                print("Transaction is not valid\n")
+            else:
+                self.save_transaction_in_pool(transaction)
+                print("Transaction successfully created and added to pool\n")
 
     def create_transaction(self, receiver, amount, transaction_fee):
         Tx1 = Tx()
@@ -33,9 +37,12 @@ class transferCoins:
 
         if Tx1.is_valid():
             Tx1.add_status(True)
+            print("valid trans")
+            return Tx1
         else:
             Tx1.add_status(False)
-        return Tx1
+            print("invlaid trans")
+            return Tx1
 
 
     def get_sender_credentials(self):

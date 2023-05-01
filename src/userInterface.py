@@ -24,6 +24,7 @@ class UserInterface:
         # Automatic stuff
 
         #Daemon().remove_invalid_transactions_from_pool(user)
+        Daemon().validate_pending_blocks_in_chain(user)
 
 
         while True:
@@ -36,8 +37,16 @@ class UserInterface:
                 print(balance)
             if choice == 3:
                 blockchain = Helper().get_blockchain()
-                for block in blockchain:
-                    print(block.previousBlock)
+                if blockchain == []:
+                    print("No blocks in chain")
+                else:
+                    for block in blockchain:
+                        print(block.blockId)
+                        print(block.validatedByUser)
+                        print(block.isValidBlock)
+
+
+
             if choice == 4:
                 Helper().print_pool()
             if choice == 5:

@@ -11,7 +11,6 @@ from Signature import *
 
 class Tx:
     def __init__(self, type = NORMAL):
-        
         self.type = type
         self.inputs = []
         self.outputs = []
@@ -19,7 +18,7 @@ class Tx:
         self.reqd = []
         self.isValidTx = []
         self.username = []
-        self.txid = uuid.uuid1()
+        self.id = uuid.uuid1()
 
     def add_input(self, from_addr, amount):
         self.inputs.append((from_addr, amount))

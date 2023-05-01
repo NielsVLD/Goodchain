@@ -1,4 +1,6 @@
 import pickle
+from database import *
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
 class Helper:
 
     path_pool = 'data/pool.dat'
@@ -78,3 +80,33 @@ class Helper:
             pass
 
         return blockchain
+    
+    def get_previous_block(self):
+        block = []
+        index = 0
+        file = open(self.path_blockchain, "rb")
+        try:
+            while True:
+                data = pickle.load(file)
+                block.append(data)
+                index += 1
+        except:
+            pass
+        
+        return block[index-1]
+
+    def delete_transaction_in_pool(self, transaction):
+        pool = self.get_pool()
+        new_pool = []
+        for transaction in pool:
+            if transaction.id != transaction.id:
+                new_pool.append(transaction)
+
+        f1 = open(self.path_pool, 'rb+')
+        f1.seek(0)
+        f1.truncate()
+
+        for transaction in new_pool:
+            file = open(self.path_pool, "ab+")
+            pickle.dump(transaction, file)
+            file.close()
