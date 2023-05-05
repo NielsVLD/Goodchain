@@ -28,16 +28,6 @@ class TxBlock (CBlock):
     def __count_totals(self):
         total_in = 0
         total_out = 0
-        #user_pbc = 
-        # for tx in self.data:
-        #     for addr, amt in tx.inputs:
-        #         if addr == user_pbc:
-        #             total_in = total_in + amt
-        #     for addr, amt in tx.outputs:
-        #         if addr == user_pbc:
-        #             total_out = total_out + amt
-        # return total_in, total_out
-    
         for tx in self.data:
             for addr, amt in tx.inputs:
                 total_in = total_in + amt
@@ -87,23 +77,27 @@ class TxBlock (CBlock):
     #         return self.previousBlock.calculate_balance(input, output, user_pbc)
         
     def mine_block(self, username):
-        digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
-        digest.update(bytes(str(self.data), 'utf8'))
-        digest.update(bytes(str(self.previousHash), 'utf8'))
+        try:
+            digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
+            digest.update(bytes(str(self.data), 'utf8'))
+            digest.update(bytes(str(self.previousHash), 'utf8'))
 
-        found = False
-        nonce = 0
-        while not found:
-            digest_temp = digest.copy()
-            digest_temp.update(bytes(str(nonce), 'utf8'))
-            hash = digest_temp.finalize()
-            zeros = bytes('0' * leading_zeros, 'utf8')
-            if hash[:leading_zeros] == zeros:
-                found = True
-                self.nonce = nonce
-            nonce += 1
-            del digest_temp
-            print(f'trying nonce: {nonce}', end='\r')
+            found = False
+            nonce = 0
+            while not found:
+                digest_temp = digest.copy()
+                digest_temp.update(bytes(str(nonce), 'utf8'))
+                hash = digest_temp.finalize()
+                zeros = bytes('0' * leading_zeros, 'utf8')
+                if hash[:leading_zeros] == zeros:
+                    found = True
+                    self.nonce = nonce
+                nonce += 1
+                del digest_temp
+                print(f'trying nonce: {nonce}', end='\r')
 
-        self.blockHash = self.computeHash()
-        self.createdBy = username
+            self.blockHash = self.computeHash()
+            self.createdBy = username
+            return True
+        except:
+            return False

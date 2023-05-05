@@ -3,6 +3,8 @@ from TxBlock import *
 from Helper import *
 from userActions.TransferCoins import transferCoins
 from BlockChain import CBlock
+import time
+from time import sleep
 class Mine:
     path_pool = 'data/pool.dat'
     path_transactionHistory = 'data/transactionHistory.dat'
@@ -12,14 +14,14 @@ class Mine:
         self.username = username
 
     def mine_ui(self):
-        self.new_block()
+        if self.check_user_can_mine_block():
+            self.new_block()
+        else:
+            print("You cannot mine a block right now. wait a minimum of three minutes in between mining.")
 
     def new_block(self):
         transactions = Helper().get_pool()
         blockchain = Helper().get_blockchain()
-        file_blockchain = open(self.path_blockchain, "rb")
-        file_transactions = open(self.path_pool, "rb")
-        sender_prv, sender_pbc = transferCoins(self.username).get_sender_credentials()
         if len(transactions) < 5:
             print("There are not enough transactions in the pool")
         else:
@@ -78,10 +80,32 @@ class Mine:
         print("Block added to blockchain")
 
     def mine_block(self, block):
-            block.mine_block(self.username)
+            start_time = time.time()
+            if block.mine_block(self.username):
+                pass
+                if time.time() - start_time < 10:
+                    sleep(10 - int(time.time() - start_time))
+                elapsed = time.time() - start_time
+                current_time = time.time()
+                print("Success! blocked mined in {:0.2f} seconds".format(elapsed))
+            else:
+                print("Error while trying to mine block")
+
             self.add_block_to_blockchain(block)
-            for transaction in block.data:
-                Helper().delete_transaction_in_pool(transaction)
+            # for transaction in block.data:
+            #     Helper().delete_transaction_in_pool(transaction)
+            database = Database("userDatabase.db")
+            database.set_time_when_mined(current_time, self.username)
+            database.close()
 
-
+    def check_user_can_mine_block(self):
+        database = Database("userDatabase.db")
+        time_when_last_mined = database.get_time_when_mined(self.username)
+        current_time = time.time()
+        if time_when_last_mined == None:
+            return True
+        else:
+            if current_time < (time_when_last_mined + float(180)):
+                return False
+        return True
 

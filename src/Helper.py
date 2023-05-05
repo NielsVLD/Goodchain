@@ -81,6 +81,60 @@ class Helper:
 
         return blockchain
     
+    def print_blockchain(self):
+        blockchain = self.get_blockchain()
+        if blockchain == []:
+            print("Chain is empty")
+        else:
+            index = 1
+            for block in blockchain:
+                if index == 1:
+                    print(f"Genesis block {index} with ID: {block.blockId}")
+                    print("\n")
+                    index += 1
+                else:
+
+                    print(f"Block {index} with ID: {block.blockId}")
+                    print("\n")
+                    index += 1
+            while True:
+                try:
+                    total = 0
+                    number = int(input("What block do you want to see? Choose a number: "))
+                    if number-1 == 0:
+                        print("Pick a number from the list")
+                        for transaction in blockchain[number-1].data:
+                            print(transaction)
+                            total +=1 
+                        print(f"Block Id: {blockchain[number-1].blockId}")
+                        print(f"Total transactions = {total}\n")
+                        break
+                except:
+                    print("Pick a number from the list")
+    def print_last_block_in_chain(self):
+        blockchain = self.get_blockchain()
+        if blockchain == []:
+            print("Chain is empty")
+        else:
+            if len(blockchain) == 1:
+                    print(f"Genesis block with ID: {blockchain[-1].blockId}")
+                    print("\n")
+            else:
+
+                print(f"Block with ID: {blockchain[-1].blockId}")
+                print("\n")
+            while True:
+                try:
+                    total = 0
+                    for transaction in blockchain[-1].data:
+                        print(transaction)
+                        total +=1 
+                    print(f"Block Id: {blockchain[-1].blockId}")
+                    print(f"Total transactions = {total}\n")
+                    break
+                except:
+                    print("Error")
+
     def get_previous_block(self):
         block = []
         index = 0
@@ -98,15 +152,16 @@ class Helper:
     def delete_transaction_in_pool(self, transaction):
         pool = self.get_pool()
         new_pool = []
-        for transaction in pool:
-            if transaction.id != transaction.id:
-                new_pool.append(transaction)
+        for transaction_pool in pool:
+            if transaction_pool.id != transaction.id:
+                new_pool.append(transaction_pool)
 
         f1 = open(self.path_pool, 'rb+')
         f1.seek(0)
         f1.truncate()
+        f1.close()
 
-        for transaction in new_pool:
-            file = open(self.path_pool, "ab+")
-            pickle.dump(transaction, file)
-            file.close()
+        file2 = open(self.path_pool, "ab+")
+        for transaction in range(len(new_pool)):
+            pickle.dump(new_pool[transaction], file2)
+        file2.close()

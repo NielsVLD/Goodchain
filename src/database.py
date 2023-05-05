@@ -4,6 +4,8 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 import hashlib
 import bcrypt
+import time
+from time import sleep
 
 class Database:
     def __init__(self, name=None):
@@ -46,7 +48,7 @@ class Database:
         private_key, public_key = generate_keys()
         private_key = private_key.decode("utf-8")
         public_key = public_key.decode("utf-8")
-        username = 'admin'
+        username = 'system'
         password = b"123"
         salt = bcrypt.gensalt()
         hash_password = bcrypt.hashpw(password, salt)
@@ -99,12 +101,33 @@ class Database:
             self.query(
                 "CREATE TABLE 'users' ('username' VARCHAR(128) NOT NULL, 'password' VARCHAR(128) NOT "
                 "NULL, 'private_key' VARCHAR NOT NULL, 'public_key' VARCHAR NOT NULL )")
+            self.query(
+                "CREATE TABLE 'timer' ('username' VARCHAR(128) NOT NULL, 'time' TIMESTAMP )")
         except:
             Exception("Error while creating tables")
         self.open("userDatabase.db")
+        self.commit()
+        if self.is_unique_username("system"):
+            self.create_super_admin()
         self.commit()
 
     def get_username_by_pbc(self, pbc):
         query = f"SELECT username FROM users WHERE public_key = ?"
         result = self.cursor.execute(query, (pbc,)).fetchone()
+        return result[0]
+    
+    def set_time_when_mined(self, time, username):
+        query = 'UPDATE timer SET time = ? WHERE username = ? '
+        self.cursor.execute(query, (time, username))
+        self.commit()
+    
+    def create_timer_user(self, username):
+        self.cursor.execute(
+            "INSERT INTO timer VALUES (:username, :time)",
+            {"username": username, "time": None})
+        self.commit()
+
+    def get_time_when_mined(self, username):
+        query = f"SELECT time FROM timer WHERE username = ?"
+        result = self.cursor.execute(query, (username,)).fetchone()
         return result[0]

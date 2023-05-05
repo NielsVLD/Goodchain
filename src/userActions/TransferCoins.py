@@ -37,11 +37,11 @@ class transferCoins:
 
         if Tx1.is_valid():
             Tx1.add_status(True)
-            print("valid trans")
+            print("valid transaction")
             return Tx1
         else:
             Tx1.add_status(False)
-            print("invlaid trans")
+            print("Invalid transaction")
             return Tx1
 
 
@@ -120,6 +120,7 @@ class transferCoins:
                     continue
                 index = 0
                 if type(num) == int and num < len(transactions):
+                    
                     if transactions_to_delete[num][0][0] == sender_pbc:
                         transactions.pop(num)
                         print("Transaction removed from pool\n")

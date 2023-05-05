@@ -24,7 +24,8 @@ class UserInterface:
         # Automatic stuff
 
         #Daemon().remove_invalid_transactions_from_pool(user)
-        Daemon().validate_pending_blocks_in_chain(user)
+        #Daemon().remove_invalid_block(user)
+        #Daemon().validate_pending_blocks_in_chain(user)
 
 
         while True:
@@ -36,14 +37,19 @@ class UserInterface:
                 balance = TransferCoins.transferCoins(user).check_balance()
                 print(balance)
             if choice == 3:
-                blockchain = Helper().get_blockchain()
-                if blockchain == []:
-                    print("No blocks in chain")
-                else:
-                    for block in blockchain:
-                        print(block.blockId)
-                        print(block.validatedByUser)
-                        print(block.isValidBlock)
+                print("1. See whole chain")
+                print("2. See last block")
+                try:
+                    number = int(input("Which option do you want to choose?: "))
+                    if number == 1:
+                        Helper().print_blockchain()        
+                    if number == 2:
+                        Helper().print_last_block_in_chain()
+                    else:
+                        print("Please choose one of the options:\n")
+                except:
+                    print("Please choose one of the options:\n")
+
 
 
 

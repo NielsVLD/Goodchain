@@ -39,41 +39,79 @@ class Daemon:
         validTransactions = True
         if blockchain != []:
             for block in blockchain:
-                if username != block.createdBy:
-                    foundUser = False
-                    for user in block.validatedByUser:
-                        if user == username:
-                            print("cannot validate block, has been done already")
-                            foundUser = True
-                    if not foundUser:
-                        for transaction in block.data:
-                            if not transaction.is_valid():
-                                validTransactions = False
-                        if validTransactions and block.is_valid():
-                            block.isValidBlock.append(True)
-                            block.validatedByUser.append(username)
-                            print("Valid Block")
-                        else:
-                            block.isValidBlock.append(False)
-                            block.validatedByUser.append(username)
-                            print("Invalid block")
+                if not block.validBlock:
+                    if username != block.createdBy:
+                        foundUser = False
+                        for user in block.validatedByUser:
+                            if user == username:
+                                print("cannot validate block, has been done already")
+                                foundUser = True
+                        if not foundUser:
+                            for transaction in block.data:
+                                if not transaction.is_valid():
+                                    validTransactions = False
+                            if validTransactions and block.is_valid():
+                                block.isValidBlock.append(True)
+                                block.validatedByUser.append(username)
+                                print("Valid Block")
+                            else:
+                                block.isValidBlock.append(False)
+                                block.validatedByUser.append(username)
+                                print("Invalid block")
 
-                f1 = open(self.path_blockchain, 'rb+')
-                f1.seek(0)
-                f1.truncate()
+                    f1 = open(self.path_blockchain, 'rb+')
+                    f1.seek(0)
+                    f1.truncate()
+                    f1.close()
 
-                for block in blockchain:
-                    file2 = open(self.path_blockchain, "ab+")
-                    pickle.dump(block, file2)
+                    for block in blockchain:
+                        file2 = open(self.path_blockchain, "ab+")
+                        pickle.dump(block, file2)
+                        file2.close()
 
+                    blockchain = Helper().get_blockchain()
+                    for block in blockchain:
+                        if block.isValidBlock[-1] and block.isValidBlock.count(True) == 3 and block.validBlock == False:
+                            block.validBlock = True
+                            self.create_mining_reward(block)
+
+                        f1 = open(self.path_blockchain, 'rb+')
+                        f1.seek(0)
+                        f1.truncate()
+                        f1.close()
+
+                        for block in blockchain:
+                            file2 = open(self.path_blockchain, "ab+")
+                            pickle.dump(block, file2)
+                            file2.close()
+
+
+    def remove_invalid_block(self, username):
         # Remove transactions and add back to pool
         blockchain = Helper().get_blockchain()
         for block in blockchain:
-            if block.validatedByUser[-1] == username and not block.isValidBlock[-1]:
-                for transaction in block.data:
-                    if not transaction.is_valid():
-                        transaction.add_status(False)
+            if block.validatedByUser != []:
+                if not block.isValidBlock[-1] and block.isValidBlock.count(False) == 3:
+                    for transaction in block.data:
+                        if not transaction.is_valid():
+                            transaction.add_status(False)
 
-                for transactions in block.data:
-                    file2 = open(self.path_pool, "ab+")
-                    pickle.dump(transactions, file2)
+                    for transaction in block.data:
+                        if transaction.is_valid():
+                            file2 = open(self.path_pool, "ab+")
+                            pickle.dump(transaction, file2)
+                else:
+                    f1 = open(self.path_blockchain, 'rb+')
+                    f1.seek(0)
+                    f1.truncate()
+                    file2 = open(self.path_blockchain, "ab+")
+                    pickle.dump(block, file2)
+
+    def create_mining_reward(self, block):
+        receiver = block.createdBy
+        amount = 50
+        transaction_fee = 0
+        Tx2 = transferCoins("system")
+        
+        reward_transaction = Tx2.create_transaction(receiver, amount, transaction_fee)
+        Tx2.save_transaction_in_pool(reward_transaction)

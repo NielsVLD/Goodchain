@@ -12,6 +12,7 @@ class Login:
                                 print("Username is not unique")
                 password = input("What is your password: ")
                 try:
+                        database.create_timer_user(username)
                         database.create_user(username, password)
                         database.commit()
                         database.close()
@@ -32,7 +33,7 @@ class Login:
                                 print("Username or password incorrect")
                                 return False 
                 except:
-                        print("Unknown error")
+                        print("Username or password incorrect")
 
 
 

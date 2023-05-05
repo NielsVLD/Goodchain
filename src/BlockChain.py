@@ -8,8 +8,7 @@ class CBlock:
     previousBlock = None
     blockId = None
     blockHash = None
-
-
+    
     def __init__(self, data, previousBlock):
         self.data = data
         self.previousBlock = previousBlock
