@@ -83,20 +83,20 @@ class Mine:
             start_time = time.time()
             if block.mine_block(self.username):
                 pass
-                if time.time() - start_time < 10:
-                    sleep(10 - int(time.time() - start_time))
-                elapsed = time.time() - start_time
-                current_time = time.time()
-                print("Success! blocked mined in {:0.2f} seconds".format(elapsed))
+                # if time.time() - start_time < 10:
+                #     sleep(10 - int(time.time() - start_time))
+                # elapsed = time.time() - start_time
+                # current_time = time.time()
+                # print("Success! blocked mined in {:0.2f} seconds".format(elapsed))
             else:
                 print("Error while trying to mine block")
 
             self.add_block_to_blockchain(block)
             # for transaction in block.data:
             #     Helper().delete_transaction_in_pool(transaction)
-            database = Database("userDatabase.db")
-            database.set_time_when_mined(current_time, self.username)
-            database.close()
+            # database = Database("userDatabase.db")
+            # database.set_time_when_mined(current_time, self.username)
+            # database.close()
 
     def check_user_can_mine_block(self):
         database = Database("userDatabase.db")

@@ -16,7 +16,10 @@ class transferCoins:
             receiver = input("What is the username of the receiver of the transaction?: ")
             amount = float(input("What is the amount to be send?: "))
             transaction_fee = float(input("What is the transaction fee?: "))
-            balance = self.check_balance(amount, transaction_fee)
+            total_in, total_output = Helper().calculate_balance(self.sender)
+            balance = total_output - total_output
+            if balance <= 0:
+                print(f"Balance too low to make transaction. Balance is: {balance}")
 
             transaction = self.create_transaction(receiver, amount, transaction_fee)
             if transaction == None:

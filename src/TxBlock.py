@@ -55,26 +55,7 @@ class TxBlock (CBlock):
 
     def find_nonce(self):
         return None
-    
-    # def calculate_balance(self,input, output, user_pbc):
-    #     if input and output == None:
-    #         input = []
-    #         output = []
 
-    #     total_in, total_out = self.__count_totals(user_pbc)
-
-    #     input.append(total_in)
-    #     output.append(total_out)
-    #     if self.previousBlock is None:
-    #         received = 50
-    #         spent = 0
-    #         for coins in input:
-    #             spent += coins
-    #         for coins in output:
-    #             received += coins
-    #         return received - spent
-    #     else:
-    #         return self.previousBlock.calculate_balance(input, output, user_pbc)
         
     def mine_block(self, username):
         try:
@@ -101,3 +82,27 @@ class TxBlock (CBlock):
             return True
         except:
             return False
+
+    # def calculate_balance(self, stack=None, pbc = None, username = None):
+    #     if pbc is None:
+    #         database = Database("userDatabase.db")
+    #         result = database.get_credentials(username)
+    #         pbc = result[1].encode("utf-8")
+    #     if stack is None:
+    #         stack = {
+    #             'in': [],
+    #             'out':[]
+    #         }
+    #     total_in, total_out = self.__count_totals(pbc)
+    #     stack['in'].append(total_in)
+    #     stack['out'].append(total_out)
+    #     if self.previousBlock is None:
+    #         spent = 0
+    #         received = 50
+    #         for item in stack['in']:
+    #             spent += item
+    #         for item in stack['out']:
+    #             received += item
+    #         return received - spent
+    #     else:
+    #         return self.previousBlock.calculate_balance(stack)

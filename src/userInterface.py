@@ -12,7 +12,18 @@ class UserInterface:
                if(user):
                    self.logged_in_screen(user)
         if choice == 2:
-            print("Needs to be done")
+            print("1. See whole chain")
+            print("2. See last block")
+            try:
+                number = int(input("Which option do you want to choose?: "))
+                if number == 1:
+                    Helper().print_blockchain()        
+                if number == 2:
+                    Helper().print_last_block_in_chain()
+                else:
+                    print("Please choose one of the options:\n")
+            except:
+                print("Please choose one of the options:\n")
         if choice == 3:
             Login().sign_up()
         if choice == 4:
@@ -34,8 +45,11 @@ class UserInterface:
                 print(f"User: {user} is logged in" )
                 TransferCoins.transferCoins(user).transfer_coins_ui()
             if choice == 2:
-                balance = TransferCoins.transferCoins(user).check_balance()
-                print(balance)
+                input, output = Helper().calculate_balance(user)
+                print(f"Total coins send to other users = {input}")
+                print(f"Total coins received from users = {output}")
+                print(f"Total balance = {output - input}")
+
             if choice == 3:
                 print("1. See whole chain")
                 print("2. See last block")

@@ -165,3 +165,52 @@ class Helper:
         for transaction in range(len(new_pool)):
             pickle.dump(new_pool[transaction], file2)
         file2.close()
+    
+    def calculate_balance(self, username):
+        blockchain = self.get_blockchain()
+        database = Database("userDatabase.db")
+        result = database.get_credentials(username)
+        user_pbc = result[1].encode("utf-8")
+        input = 0
+        output = 0
+        start_amount = 50
+
+        for block in blockchain:
+            print(block)
+            for transaction in block.data:
+                for addr, amount in transaction.inputs:
+                    if addr == user_pbc:
+                        input += amount
+                for addr, amount in transaction.outputs:
+                        if addr == user_pbc:
+                            output += amount
+                  
+        total_input = input
+        total_output = output
+
+        return total_input, total_output
+
+
+
+
+
+
+    # def calculate_balance(self,input, output, user_pbc):
+    #     if input and output == None:
+    #         input = []
+    #         output = []
+
+        # total_in, total_out = self.__count_totals(user_pbc)
+
+    #     input.append(total_in)
+    #     output.append(total_out)
+    #     if self.previousBlock is None:
+    #         received = 50
+    #         spent = 0
+    #         for coins in input:
+    #             spent += coins
+    #         for coins in output:
+    #             received += coins
+    #         return received - spent
+    #     else:
+    #         return self.previousBlock.calculate_balance(input, output, user_pbc)
