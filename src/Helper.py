@@ -13,11 +13,9 @@ class Helper:
     path_blockchainHash = 'data/blockchainHash.txt'
 
     def print_pool(self):
-        # if not Helper().check_hash('data/pool.dat'):
-        #    exit("Tampering with pool detected!")
         pool = []
+        file = open(self.path_pool, "rb+")
         total = 0
-        file = open(self.path_pool, "rb")
         try:
             while True:
                 data = pickle.load(file)
@@ -25,7 +23,7 @@ class Helper:
                 total += 1
         except:
             pass
-        
+    
         for transaction in pool:
             print(f"{transaction}\n")
         
@@ -118,6 +116,7 @@ class Helper:
                             total +=1 
                         print(f"Block Id: {blockchain[number-1].blockId}")
                         print(f"Total transactions = {total}\n")
+                        print(f"Block has been validated: {blockchain[number-1].validBlock}")
                         break
                     else:
                         print("Please choose one of the options:\n")
@@ -143,10 +142,12 @@ class Helper:
                         print(transaction)
                         total +=1 
                     print(f"Block Id: {blockchain[-1].blockId}")
-                    print(f"Total transactions = {total}\n")
+                    print(f"Total transactions = {total}")
+                    print(f"Block has been validated: {blockchain[-1].validBlock}\n")
+
                     break
                 except:
-                    print("Error")
+                    print("Error when getting blockchain")
 
     def get_previous_block(self):
         block = []
@@ -178,7 +179,7 @@ class Helper:
             pickle.dump(new_pool[i], f1)
         else:
             f1.close()
-            self.create_hash(self.path_pool)
+        self.create_hash(self.path_pool)
     
     def calculate_balance(self, username):
         blockchain = self.get_blockchain()
@@ -228,15 +229,6 @@ class Helper:
             file.write(hashed_blockchain)
             file.close()
 
-
-        # if path == self.path_transactionHistory:
-        #     digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
-        #     digest.update(bytes(str(history),'utf8'))
-        #     hashed_hist = digest.finalize()
-
-        #     file = open(self.path_transactionHistory, "wb")
-        #     pickle.dump(hashed_hist, file)
-        #     file.close()
 
     def check_hash(self, path):
         pool = self.get_pool()

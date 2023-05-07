@@ -33,6 +33,7 @@ class Daemon:
         for transaction in transactions:
             file2 = open(self.path_pool, "ab+")
             pickle.dump(transaction, file2)
+        Helper().create_hash('data/blockchain.dat')
 
     def validate_pending_blocks_in_chain(self, username):
         blockchain = Helper().get_blockchain()
@@ -44,7 +45,6 @@ class Daemon:
                         foundUser = False
                         for user in block.validatedByUser:
                             if user == username:
-                                print("cannot validate block, has been done already")
                                 foundUser = True
                         if not foundUser:
                             for transaction in block.data:
@@ -53,37 +53,26 @@ class Daemon:
                             if validTransactions and block.is_valid():
                                 block.isValidBlock.append(True)
                                 block.validatedByUser.append(username)
-                                print("Valid Block")
+                                print("Daemon validated a pending block true")
                             else:
                                 block.isValidBlock.append(False)
                                 block.validatedByUser.append(username)
-                                print("Invalid block")
+                                print("Daemon validated a pending block false")
 
-                    f1 = open(self.path_blockchain, 'rb+')
-                    f1.seek(0)
-                    f1.truncate()
-                    f1.close()
+                        if len(block.isValidBlock) != 0:
+                            if block.isValidBlock[-1] and block.isValidBlock.count(True) == 3 and block.validBlock == False:
+                                block.validBlock = True
+                                self.create_mining_reward(block)
 
-                    for block in blockchain:
-                        file2 = open(self.path_blockchain, "ab+")
-                        pickle.dump(block, file2)
-                        file2.close()
+                            f1 = open(self.path_blockchain, 'rb+')
+                            f1.seek(0)
+                            f1.truncate()
+                            f1.close()
 
-                    blockchain = Helper().get_blockchain()
-                    for block in blockchain:
-                        if block.isValidBlock[-1] and block.isValidBlock.count(True) == 3 and block.validBlock == False:
-                            block.validBlock = True
-                            self.create_mining_reward(block)
-
-                        f1 = open(self.path_blockchain, 'rb+')
-                        f1.seek(0)
-                        f1.truncate()
-                        f1.close()
-
-                        for block in blockchain:
                             file2 = open(self.path_blockchain, "ab+")
                             pickle.dump(block, file2)
                             file2.close()
+        Helper().create_hash('data/blockchain.dat')
 
 
     def remove_invalid_block(self, username):
@@ -95,6 +84,7 @@ class Daemon:
                     for transaction in block.data:
                         if not transaction.is_valid():
                             transaction.add_status(False)
+                            print("Daemon spotted a invalid transaction ")
 
                     for transaction in block.data:
                         if transaction.is_valid():
@@ -106,6 +96,7 @@ class Daemon:
                     f1.truncate()
                     file2 = open(self.path_blockchain, "ab+")
                     pickle.dump(block, file2)
+                    Helper().create_hash('data/blockchain.dat')
 
     def create_mining_reward(self, block):
         receiver = block.createdBy
@@ -115,3 +106,4 @@ class Daemon:
         
         reward_transaction = Tx2.create_transaction(receiver, amount, transaction_fee)
         Tx2.save_transaction_in_pool(reward_transaction)
+        Helper().create_hash('data/pool.dat')

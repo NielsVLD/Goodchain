@@ -4,6 +4,7 @@ from userActions import TransferCoins
 from Helper import Helper
 from Daemon import Daemon
 from userActions.Mine import Mine
+
 class UserInterface:
     def main_screen(self):
         choice: int = self.choices(["Login", "Explore the blockchain", "Sign up", "Exit"])
@@ -33,22 +34,18 @@ class UserInterface:
 
     def logged_in_screen(self, user):
         # Automatic stuff
-
-        # Daemon().remove_invalid_transactions_from_pool(user)
-        # Daemon().remove_invalid_block(user)
-        # Daemon().validate_pending_blocks_in_chain(user)
+        Daemon().remove_invalid_transactions_from_pool(user)
+        Daemon().remove_invalid_block(user)
+        Daemon().validate_pending_blocks_in_chain(user)
+    
 
         if not Helper().check_hash('data/pool.dat'):
-           exit("Tampering with pool detected!")
-        
+            exit("Tampering with pool detected!")
         if not Helper().check_hash('data/blockchain.dat'):
-           exit("Tampering with the blockchain detected!")
-
-            
-
+            exit("Tampering with the blockchain detected!")
 
         while True:
-            choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Modify a transaction in the pool", "See history of transactions", "Mine a block", "See credentials", "Logout", "Exit"])
+            choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Modify a transaction in the pool", "See history of transactions", "Mine a block", "Logout", "Exit"])
             if choice == 1:
                 TransferCoins.transferCoins(user).transfer_coins_ui()
             if choice == 2:
@@ -86,10 +83,8 @@ class UserInterface:
             if choice == 8:
                 Mine(user).mine_ui()
             if choice == 9:
-                print("Needs to be done")
-            if choice == 10:
                 self.main_screen()
-            if choice == 11:
+            if choice == 10:
                 exit("Goodbye")
             else:
                 self.logged_in_screen

@@ -66,15 +66,15 @@ class TxBlock (CBlock):
             found = False
             nonce = 0
             while not found:
-                digest_temp = digest.copy()
-                digest_temp.update(bytes(str(nonce), 'utf8'))
-                hash = digest_temp.finalize()
+                temp = digest.copy()
+                temp.update(bytes(str(nonce), 'utf8'))
+                hash = temp.finalize()
                 zeros = bytes('0' * leading_zeros, 'utf8')
                 if hash[:leading_zeros] == zeros:
                     found = True
                     self.nonce = nonce
                 nonce += 1
-                del digest_temp
+                del temp
                 print(f'trying nonce: {nonce}', end='\r')
 
             self.blockHash = self.computeHash()
