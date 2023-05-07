@@ -106,7 +106,8 @@ class Tx:
 
         repr_str += "TRANSACTION FEE:\n"     
         for sig in self.sigs:
-            repr_str = repr_str + str(input_amt - output_amt) + "\n"
+            transactionfee = input_amt - output_amt
+            repr_str = repr_str + str("{:0.2f}".format(transactionfee)) + "\n"
         
         repr_str += "VALID TRANSACTION:\n"     
         for sig in self.sigs:

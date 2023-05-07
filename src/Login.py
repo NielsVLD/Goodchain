@@ -1,4 +1,6 @@
 from database import *
+from userActions import TransferCoins
+
 
 class Login:
         def sign_up(self):
@@ -17,6 +19,11 @@ class Login:
                         database.commit()
                         database.close()
                         print("User succesfully added\n")
+                        
+                        amount = 50
+                        receiver = username
+                        TransferCoins.transferCoins("system").create_signup_reward(receiver, amount)
+
                 except:
                         print("Error when creating user\n")
         

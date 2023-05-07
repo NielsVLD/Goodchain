@@ -1,13 +1,20 @@
 import pickle
 from database import *
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
+import filecmp
+from pathlib import Path
+import pathlib
 class Helper:
 
     path_pool = 'data/pool.dat'
     path_transactionHistory = 'data/transactionHistory.dat'
     path_blockchain = 'data/blockchain.dat'
+    path_poolHash = 'data/poolHash.txt'
+    path_blockchainHash = 'data/blockchainHash.txt'
 
     def print_pool(self):
+        if not Helper().check_hash('data/pool.dat'):
+           exit("Tampering with pool detected!")
         pool = []
         total = 0
         file = open(self.path_pool, "rb")
@@ -25,6 +32,8 @@ class Helper:
         print(f"Total in pool = {total}\n")
         
     def is_pool_empty(self):
+        if not Helper().check_hash('data/pool.dat'):
+           exit("Tampering with pool detected!")
         pool = []
         file = open(self.path_pool, "rb")
         try:
@@ -59,7 +68,7 @@ class Helper:
         
     def get_pool(self):
         transactions = []
-        file = open(self.path_pool, "rb")
+        file = open(self.path_pool, "rb+")
         try:
             while True:
                 data = pickle.load(file)
@@ -100,6 +109,7 @@ class Helper:
             while True:
                 try:
                     total = 0
+                    print(f"Total number of blocks = {index - 1}")
                     number = int(input("What block do you want to see? Choose a number: "))
                     if number-1 == 0:
                         print("Pick a number from the list")
@@ -108,6 +118,9 @@ class Helper:
                             total +=1 
                         print(f"Block Id: {blockchain[number-1].blockId}")
                         print(f"Total transactions = {total}\n")
+                        break
+                    else:
+                        print("Please choose one of the options:\n")
                         break
                 except:
                     print("Pick a number from the list")
@@ -150,6 +163,8 @@ class Helper:
         return block[index-1]
 
     def delete_transaction_in_pool(self, transaction):
+        if not Helper().check_hash('data/pool.dat'):
+           exit("Tampering with pool detected!")
         pool = self.get_pool()
         new_pool = []
         for transaction_pool in pool:
@@ -159,12 +174,11 @@ class Helper:
         f1 = open(self.path_pool, 'rb+')
         f1.seek(0)
         f1.truncate()
-        f1.close()
-
-        file2 = open(self.path_pool, "ab+")
-        for transaction in range(len(new_pool)):
-            pickle.dump(new_pool[transaction], file2)
-        file2.close()
+        for i in range(len(new_pool)):
+            pickle.dump(new_pool[i], f1)
+        else:
+            f1.close()
+            self.create_hash(self.path_pool)
     
     def calculate_balance(self, username):
         blockchain = self.get_blockchain()
@@ -173,7 +187,6 @@ class Helper:
         user_pbc = result[1].encode("utf-8")
         input = 0
         output = 0
-        start_amount = 50
 
         for block in blockchain:
             print(block)
@@ -190,27 +203,52 @@ class Helper:
 
         return total_input, total_output
 
+    def create_hash(self, path):
+        pool = self.get_pool()
+        blockchain = self.get_blockchain()
 
+        if path == self.path_pool:
+            digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
+            digest.update(bytes(str(pool),'utf8'))
+            hashed_pool = digest.finalize()
 
+            file = open(self.path_poolHash, "wb")
+            pickle.dump(hashed_pool, file)
+            file.close()
+        
+        if path == self.path_blockchain:
+            digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
+            digest.update(bytes(str(blockchain),'utf8'))
+            hashed_blockchain = digest.finalize()
 
+            file = open(self.path_blockchainHash, "wb")
+            pickle.dump(hashed_blockchain, file)
+            file.close()
 
+    def check_hash(self, path):
+        pool = self.get_pool()
+        blockchain = self.get_blockchain()
 
-    # def calculate_balance(self,input, output, user_pbc):
-    #     if input and output == None:
-    #         input = []
-    #         output = []
+        if path == self.path_pool:
+            digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
+            digest.update(bytes(str(pool),'utf8'))
+            hashed_pool = digest.finalize()
+            
+            file = open(self.path_poolHash, "rb+")
+            storedPoolHash = pickle.load(file)
 
-        # total_in, total_out = self.__count_totals(user_pbc)
+            result = hashed_pool == storedPoolHash
+            print(result)
+            return result
 
-    #     input.append(total_in)
-    #     output.append(total_out)
-    #     if self.previousBlock is None:
-    #         received = 50
-    #         spent = 0
-    #         for coins in input:
-    #             spent += coins
-    #         for coins in output:
-    #             received += coins
-    #         return received - spent
-    #     else:
-    #         return self.previousBlock.calculate_balance(input, output, user_pbc)
+        if path == self.path_blockchain:
+            digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
+            digest.update(bytes(str(blockchain),'utf8'))
+            hashed_blockchain = digest.finalize()
+            
+            file = open(self.path_blockchainHash, "rb+")
+            storedBlockchainHash = pickle.load(file)
+
+            result = hashed_blockchain == storedBlockchainHash
+            print(result)
+            return result

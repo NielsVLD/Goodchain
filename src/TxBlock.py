@@ -79,6 +79,7 @@ class TxBlock (CBlock):
 
             self.blockHash = self.computeHash()
             self.createdBy = username
+            print(zeros)
             return True
         except:
             return False

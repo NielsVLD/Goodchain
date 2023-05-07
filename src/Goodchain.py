@@ -5,6 +5,7 @@ from TxBlock import TxBlock
 from userInterface import *
 from pathlib import Path
 import pathlib
+import pickle
 
 if __name__ == "__main__":
     # Make files
@@ -13,11 +14,26 @@ if __name__ == "__main__":
     pathlib.Path('data/pool.dat').touch()
     pathlib.Path('data/transactionHistory.dat').touch()
     pathlib.Path('data/userDatabase.db').touch()
+    pathlib.Path('data/blockchainHash.txt').touch()
+    pathlib.Path('data/poolHash.txt').touch()
 
+    try:
+        file = open('data/poolHash.txt', "rb+")
+        storedPoolHash = pickle.load(file)
+        file.close()
+
+    except:
+        Helper().create_hash('data/pool.dat')
+    try:
+        file = open('data/blockchainHash.txt', "rb+")
+        storedBlockchainHash = pickle.load(file)
+        file.close()
+    except:
+        Helper().create_hash('data/blockchain.dat')
 
     database = Database("userDatabase.db")
     database.check_migrations()
     database.close()
 
-    #UserInterface().main_screen()
+    UserInterface().main_screen()
     UserInterface().logged_in_screen("niels")

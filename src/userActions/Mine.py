@@ -23,7 +23,7 @@ class Mine:
         transactions = Helper().get_pool()
         blockchain = Helper().get_blockchain()
         if len(transactions) < 5:
-            print("There are not enough transactions in the pool")
+            print("There are not enough transactions in the pool to mine a block \n")
         else:
             if blockchain == []:
                 genesisBlock = TxBlock(None)
@@ -37,7 +37,7 @@ class Mine:
                         genesisBlock.addTx(transactions[index])
                         print("Invalid transaction detected!")
                         index += 1
-
+                
                 f1 = open(self.path_pool, 'rb+')
                 f1.seek(0)
                 f1.truncate()
@@ -92,11 +92,18 @@ class Mine:
                 print("Error while trying to mine block")
 
             self.add_block_to_blockchain(block)
-            # for transaction in block.data:
-            #     Helper().delete_transaction_in_pool(transaction)
-            # database = Database("userDatabase.db")
-            # database.set_time_when_mined(current_time, self.username)
-            # database.close()
+
+            print(len(Helper().get_pool()))
+            if len(Helper().get_pool()) == 4:
+                    open(self.path_pool, "w+").close()
+                    self.create_hash(self.path_pool)
+            else:
+                for transaction in block.data:
+                    Helper().delete_transaction_in_pool(transaction)
+
+                # database = Database("userDatabase.db")
+                # database.set_time_when_mined(current_time, self.username)
+                # database.close()
 
     def check_user_can_mine_block(self):
         database = Database("userDatabase.db")
