@@ -20,6 +20,8 @@ class Mine:
             print("You cannot mine a block right now. wait a minimum of three minutes in between mining.")
 
     def new_block(self):
+        if not Helper().check_hash('data/blockchain.dat'):
+           exit("Tampering with the blockchain detected!")
         transactions = Helper().get_pool()
         blockchain = Helper().get_blockchain()
         if len(transactions) < 5:
@@ -46,7 +48,6 @@ class Mine:
                     file2 = open(self.path_pool, "ab+")
                     pickle.dump(transaction, file2)
                 
-                #self.add_block_to_blockchain(block)
                 self.mine_block(genesisBlock)
             else:
                 prevBlock = Helper().get_previous_block()
@@ -70,10 +71,11 @@ class Mine:
                     file2 = open(self.path_pool, "ab+")
                     pickle.dump(transaction, file2)
                 
-                #self.add_block_to_blockchain(block)
                 self.mine_block(block)
     
     def add_block_to_blockchain(self, block):
+        if not Helper().check_hash('data/blockchain.dat'):
+           exit("Tampering with the blockchain detected!")
         file = open(self.path_blockchain, "ab+")
         pickle.dump(block, file)
         file.close()
@@ -83,23 +85,22 @@ class Mine:
             start_time = time.time()
             if block.mine_block(self.username):
                 pass
-                # if time.time() - start_time < 10:
-                #     sleep(10 - int(time.time() - start_time))
-                # elapsed = time.time() - start_time
-                # current_time = time.time()
-                # print("Success! blocked mined in {:0.2f} seconds".format(elapsed))
+                if time.time() - start_time < 10:
+                    sleep(10 - int(time.time() - start_time))
+                elapsed = time.time() - start_time
+                current_time = time.time()
+                print("Success! blocked mined in {:0.2f} seconds".format(elapsed))
             else:
                 print("Error while trying to mine block")
 
             self.add_block_to_blockchain(block)
+            Helper().create_hash('data/blockchain.dat')
 
-            print(len(Helper().get_pool()))
-            if len(Helper().get_pool()) == 4:
-                    open(self.path_pool, "w+").close()
-                    self.create_hash(self.path_pool)
-            else:
-                for transaction in block.data:
-                    Helper().delete_transaction_in_pool(transaction)
+            # if len(Helper().get_pool()) == 4:
+            #         open(self.path_pool, "w+").close()
+            # else:
+            #     for transaction in block.data:
+            #         Helper().delete_transaction_in_pool(transaction)
 
                 # database = Database("userDatabase.db")
                 # database.set_time_when_mined(current_time, self.username)

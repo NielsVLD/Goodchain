@@ -79,31 +79,6 @@ class TxBlock (CBlock):
 
             self.blockHash = self.computeHash()
             self.createdBy = username
-            print(zeros)
             return True
         except:
             return False
-
-    # def calculate_balance(self, stack=None, pbc = None, username = None):
-    #     if pbc is None:
-    #         database = Database("userDatabase.db")
-    #         result = database.get_credentials(username)
-    #         pbc = result[1].encode("utf-8")
-    #     if stack is None:
-    #         stack = {
-    #             'in': [],
-    #             'out':[]
-    #         }
-    #     total_in, total_out = self.__count_totals(pbc)
-    #     stack['in'].append(total_in)
-    #     stack['out'].append(total_out)
-    #     if self.previousBlock is None:
-    #         spent = 0
-    #         received = 50
-    #         for item in stack['in']:
-    #             spent += item
-    #         for item in stack['out']:
-    #             received += item
-    #         return received - spent
-    #     else:
-    #         return self.previousBlock.calculate_balance(stack)

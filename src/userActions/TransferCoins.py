@@ -20,20 +20,20 @@ class transferCoins:
                 total_input, total_output = Helper().calculate_balance(self.sender)
                 balance = total_output - total_input
                 transaction = self.create_transaction(receiver, amount, transaction_fee)
-                self.save_transaction_in_pool(transaction)
-                Helper().create_hash(self.path_pool)
+                # self.save_transaction_in_pool(transaction)
+                # Helper().create_hash(self.path_pool)
 
 
-                # if balance <= 0:
-                #     print(f"Balance too low to make transaction. Balance is: {float(balance)}")
-                # else:
-                #     transaction = self.create_transaction(receiver, amount, transaction_fee)
-                #     if transaction == None:
-                #         print("Transaction is not valid\n")
-                #     else:
-                #         self.save_transaction_in_pool(transaction)
-                #         Helper().create_hash(self.path_pool)
-                #         print("Transaction successfully created and added to pool\n")
+                if balance <= 0:
+                    print(f"Balance too low to make transaction. Balance is: {float(balance)}")
+                else:
+                    transaction = self.create_transaction(receiver, amount, transaction_fee)
+                    if transaction == None:
+                        print("Transaction is not valid\n")
+                    else:
+                        self.save_transaction_in_pool(transaction)
+                        Helper().create_hash(self.path_pool)
+                        print("Transaction successfully created and added to pool\n")
             except:
                 print("Error when creating transaction, try again")
 
@@ -131,7 +131,7 @@ class transferCoins:
                 try:
                     num = int(input("What transaction do you want to delete?: "))
                 except:
-                    print("Choose a number from the list\n")
+                    print("Please choose one of the options:\n")
                     continue
                 index = 0
                 if type(num) == int and num < len(transactions):
@@ -144,8 +144,8 @@ class transferCoins:
                         print("You can only delete your own transactions\n")
                         break
                 else:
-                    print("Choose a number from the list\n")
-                    continue
+                    print("Please choose one of the options:\n")
+                    break
                 
             f1 = open(self.path_pool, 'rb+')
             f1.seek(0)
@@ -154,7 +154,6 @@ class transferCoins:
             for transaction in transactions:
                         file2 = open(self.path_pool, "ab+")
                         pickle.dump(transaction, file2)
-            Helper().create_hash(self.path_pool)
         else:       
             print("Pool is empty, cannot cancel a transaction\n")
 
@@ -184,7 +183,7 @@ class transferCoins:
                 try:
                     num = int(input("What transaction do you want to update?: "))
                 except:
-                    print("Choose a number from the list\n")
+                    print("Please choose one of the options:\n")
                     continue
                 index = 0
                 if type(num) == int and num < len(transactions):
@@ -204,10 +203,10 @@ class transferCoins:
 
                         if transaction.is_valid():
                             transaction.add_status(True)
-                            print("valid transaction")
+                            print("Valid transaction added to the pool, waiting for mining")
                         else:
                             transaction.add_status(False)
-                            print("Invalid transaction")
+                            print("Invalid transaction, try again")
                         f1 = open(self.path_pool, 'rb+')
                         f1.seek(0)
                         f1.truncate()
@@ -215,17 +214,18 @@ class transferCoins:
                         for transaction in transactions:
                                     file2 = open(self.path_pool, "ab+")
                                     pickle.dump(transaction, file2)  
-                        Helper().create_hash(self.path_pool)
                     else:
                         print("You can only update your own transactions\n")
                     break
                 else:
-                    print("Choose a number from the list\n")
+                    print("Please choose one of the options:\n")
                     continue
         else:       
             print("Pool is empty, cannot cancel a transaction\n")
     
     def create_signup_reward(self, receiver, amount):
+        if not Helper().check_hash('data/pool.dat'):
+           exit("Tampering with pool detected!")
         Tx1 = Tx()
         sender_prv, sender_pbc = self.get_sender_credentials()
         receiver_prv, receiver_pbc = self.get_receiver_credentials(receiver)

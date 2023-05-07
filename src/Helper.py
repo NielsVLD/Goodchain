@@ -13,8 +13,8 @@ class Helper:
     path_blockchainHash = 'data/blockchainHash.txt'
 
     def print_pool(self):
-        if not Helper().check_hash('data/pool.dat'):
-           exit("Tampering with pool detected!")
+        # if not Helper().check_hash('data/pool.dat'):
+        #    exit("Tampering with pool detected!")
         pool = []
         total = 0
         file = open(self.path_pool, "rb")
@@ -32,8 +32,8 @@ class Helper:
         print(f"Total in pool = {total}\n")
         
     def is_pool_empty(self):
-        if not Helper().check_hash('data/pool.dat'):
-           exit("Tampering with pool detected!")
+        # if not Helper().check_hash('data/pool.dat'):
+        #    exit("Tampering with pool detected!")
         pool = []
         file = open(self.path_pool, "rb")
         try:
@@ -80,7 +80,7 @@ class Helper:
     
     def get_blockchain(self):
         blockchain = []
-        file = open(self.path_blockchain, "rb")
+        file = open(self.path_blockchain, "rb+")
         try:
             while True:
                 data = pickle.load(file)
@@ -163,8 +163,8 @@ class Helper:
         return block[index-1]
 
     def delete_transaction_in_pool(self, transaction):
-        if not Helper().check_hash('data/pool.dat'):
-           exit("Tampering with pool detected!")
+        # if not Helper().check_hash('data/pool.dat'):
+        #    exit("Tampering with pool detected!")
         pool = self.get_pool()
         new_pool = []
         for transaction_pool in pool:
@@ -189,7 +189,6 @@ class Helper:
         output = 0
 
         for block in blockchain:
-            print(block)
             for transaction in block.data:
                 for addr, amount in transaction.inputs:
                     if addr == user_pbc:
@@ -206,6 +205,7 @@ class Helper:
     def create_hash(self, path):
         pool = self.get_pool()
         blockchain = self.get_blockchain()
+        history = self.get_history()
 
         if path == self.path_pool:
             digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
@@ -215,20 +215,33 @@ class Helper:
             file = open(self.path_poolHash, "wb")
             pickle.dump(hashed_pool, file)
             file.close()
-        
-        if path == self.path_blockchain:
-            digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
-            digest.update(bytes(str(blockchain),'utf8'))
-            hashed_blockchain = digest.finalize()
+    
 
-            file = open(self.path_blockchainHash, "wb")
-            pickle.dump(hashed_blockchain, file)
+        if path == self.path_blockchain:
+            file = open(self.path_blockchain, "rb")
+            sha256 = hashlib.sha256()
+            for block in iter(lambda: file.read(4096), b""):
+                sha256.update(block)
+            hashed_blockchain = sha256.hexdigest()
+
+            file = open(self.path_blockchainHash, "w")
+            file.write(hashed_blockchain)
             file.close()
+
+
+        # if path == self.path_transactionHistory:
+        #     digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
+        #     digest.update(bytes(str(history),'utf8'))
+        #     hashed_hist = digest.finalize()
+
+        #     file = open(self.path_transactionHistory, "wb")
+        #     pickle.dump(hashed_hist, file)
+        #     file.close()
 
     def check_hash(self, path):
         pool = self.get_pool()
         blockchain = self.get_blockchain()
-
+        history = self.get_history()
         if path == self.path_pool:
             digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
             digest.update(bytes(str(pool),'utf8'))
@@ -238,17 +251,42 @@ class Helper:
             storedPoolHash = pickle.load(file)
 
             result = hashed_pool == storedPoolHash
-            print(result)
             return result
 
         if path == self.path_blockchain:
-            digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
-            digest.update(bytes(str(blockchain),'utf8'))
-            hashed_blockchain = digest.finalize()
-            
-            file = open(self.path_blockchainHash, "rb+")
-            storedBlockchainHash = pickle.load(file)
+            file = open(self.path_blockchain, "rb")
+
+            sha256 = hashlib.sha256()
+            for block in iter(lambda: file.read(4096), b""):
+                sha256.update(block)
+            hashed_blockchain = sha256.hexdigest()
+                
+            file = open(self.path_blockchainHash, "r")
+            storedBlockchainHash = file.read()
 
             result = hashed_blockchain == storedBlockchainHash
-            print(result)
             return result
+
+        # if path == self.path_transactionHistory:
+        #     digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
+        #     digest.update(bytes(str(history),'utf8'))
+        #     hashed_history = digest.finalize()
+            
+        #     file = open(self.path_transactionHistory, "rb+")
+        #     storedTransHist = pickle.load(file)
+
+        #     result = hashed_history == storedTransHist
+        #     return result
+
+
+    def get_history(self):
+        transactions = []
+        file = open(self.path_transactionHistory, "rb+")
+        try:
+            while True:
+                data = pickle.load(file)
+                transactions.append(data)
+        except:
+            pass
+        
+        return transactions

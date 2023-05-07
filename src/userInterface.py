@@ -34,21 +34,22 @@ class UserInterface:
     def logged_in_screen(self, user):
         # Automatic stuff
 
-        #Daemon().remove_invalid_transactions_from_pool(user)
-        #Daemon().remove_invalid_block(user)
-        #Daemon().validate_pending_blocks_in_chain(user)
+        # Daemon().remove_invalid_transactions_from_pool(user)
+        # Daemon().remove_invalid_block(user)
+        # Daemon().validate_pending_blocks_in_chain(user)
+
         if not Helper().check_hash('data/pool.dat'):
            exit("Tampering with pool detected!")
         
         if not Helper().check_hash('data/blockchain.dat'):
            exit("Tampering with the blockchain detected!")
+
             
 
 
         while True:
             choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Modify a transaction in the pool", "See history of transactions", "Mine a block", "See credentials", "Logout", "Exit"])
             if choice == 1:
-                print(f"User: {user} is logged in" )
                 TransferCoins.transferCoins(user).transfer_coins_ui()
             if choice == 2:
                 total_input, output = Helper().calculate_balance(user)
