@@ -87,29 +87,31 @@ class Mine:
             print("Error while trying to add a block to the chain")
 
     def mine_block(self, block):
-            try:
+            if self.check_if_chain_is_valid():
+                try:     
+                    start_time = time.time()
+                    if block.mine_block(self.username):
+                        pass
+                        if time.time() - start_time < 10:
+                            sleep(10 - int(time.time() - start_time))
+                        elapsed = time.time() - start_time
+                        current_time = time.time()
+                        print("Success! blocked mined in {:0.2f} seconds".format(elapsed))
+                    else:
+                        print("Error while trying to mine block")
 
-                start_time = time.time()
-                if block.mine_block(self.username):
-                    pass
-                    if time.time() - start_time < 10:
-                        sleep(10 - int(time.time() - start_time))
-                    elapsed = time.time() - start_time
-                    current_time = time.time()
-                    print("Success! blocked mined in {:0.2f} seconds".format(elapsed))
-                else:
-                    print("Error while trying to mine block")
-
-                self.add_block_to_blockchain(block)
-                Helper().create_hash('data/blockchain.dat')
-                
-                for transaction in block.data:
-                    Helper().delete_transaction_in_pool(transaction)
-                database = Database("userDatabase.db")
-                database.set_time_when_mined(current_time, self.username)
-                database.close()
-            except:
-                print("Error while trying to mine a block")
+                    self.add_block_to_blockchain(block)
+                    Helper().create_hash('data/blockchain.dat')
+                    
+                    for transaction in block.data:
+                        Helper().delete_transaction_in_pool(transaction)
+                    database = Database("userDatabase.db")
+                    database.set_time_when_mined(current_time, self.username)
+                    database.close()
+                except:
+                    print("Error while trying to mine a block")
+            else:
+                print("Cannot mine a block. Chain is not valid.")
 
     def check_user_can_mine_block(self):
         database = Database("userDatabase.db")
@@ -121,4 +123,28 @@ class Mine:
             if current_time < (time_when_last_mined + float(180)):
                 return False
         return True
+
+    def check_if_chain_is_valid(self):
+        chain = Helper().get_blockchain()
+        if chain == []:
+            return True
+        else:
+            if chain[-1].validBlock:
+                return True
+            else:
+                return False
+            
+    def add_system_block_to_chain(self, transaction):
+        blockchain = Helper().get_blockchain()
+        if blockchain == []:
+                    genesisBlock = TxBlock(None)
+                    genesisBlock.addTx(transaction)
+                    
+                    self.mine_block(genesisBlock)
+        else:
+                    prevBlock = Helper().get_previous_block()
+                    block = TxBlock(prevBlock)
+                    block.addTx(transaction)
+
+                    self.mine_block(genesisBlock)
 
