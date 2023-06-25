@@ -104,8 +104,6 @@ class Helper:
                         print(f"Block {index} with ID: {block.blockId}")
                         print("\n")
                         index += 1
-                else:
-                    print("Chain is empty")
             while True:
                 try:
                         total = 0
@@ -114,13 +112,14 @@ class Helper:
                         if number == 0:
                             print("Pick a number from the list")
                         else:
-                            for transaction in blockchain[number-1].data:
-                                print(transaction)
-                                total +=1 
-                            print(f"Block Id: {blockchain[number-1].blockId}")
-                            print(f"Total transactions = {total}\n")
-                            print(f"Block has been validated: {blockchain[number-1].validBlock}")
-                            break
+                            if blockchain[number-1].validBlock:
+                                for transaction in blockchain[number-1].data:
+                                    print(transaction)
+                                    total +=1 
+                                print(f"Block Id: {blockchain[number-1].blockId}")
+                                print(f"Total transactions = {total}")
+                                print(f"Block has been validated: {blockchain[number-1].validBlock}")
+                                break
                 except:
                     print("Pick a number from the list")
     def print_last_block_in_chain(self):
@@ -188,7 +187,6 @@ class Helper:
         user_pbc = result[1].encode("utf-8")
         input = 0
         output = 0
-
         for block in blockchain:
             for transaction in block.data:
                 for addr, amount in transaction.inputs:

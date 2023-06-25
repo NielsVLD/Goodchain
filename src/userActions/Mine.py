@@ -82,7 +82,6 @@ class Mine:
             file = open(self.path_blockchain, "ab+")
             pickle.dump(block, file)
             file.close()
-            print("Block added to blockchain\n")
         except:
             print("Error while trying to add a block to the chain")
 
@@ -103,8 +102,10 @@ class Mine:
                     self.add_block_to_blockchain(block)
                     Helper().create_hash('data/blockchain.dat')
                     
+                    print(len(block.data))
                     for transaction in block.data:
                         Helper().delete_transaction_in_pool(transaction)
+                        print("times it went in deletion")
                     database = Database("userDatabase.db")
                     database.set_time_when_mined(current_time, self.username)
                     database.close()
