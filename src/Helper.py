@@ -71,7 +71,7 @@ class Helper:
             while True:
                 data = pickle.load(file)
                 transactions.append(data)
-        except:
+        except EOFError:
             pass
         
         return transactions
@@ -83,7 +83,7 @@ class Helper:
             while True:
                 data = pickle.load(file)
                 blockchain.append(data)
-        except:
+        except EOFError:
             pass
 
         return blockchain
@@ -95,32 +95,32 @@ class Helper:
         else:
             index = 1
             for block in blockchain:
-                if index == 1:
-                    print(f"Genesis block {index} with ID: {block.blockId}")
-                    print("\n")
-                    index += 1
+                if block.validBlock:
+                    if index == 1:
+                        print(f"Genesis block {index} with ID: {block.blockId}")
+                        print("\n")
+                        index += 1
+                    else:
+                        print(f"Block {index} with ID: {block.blockId}")
+                        print("\n")
+                        index += 1
                 else:
-
-                    print(f"Block {index} with ID: {block.blockId}")
-                    print("\n")
-                    index += 1
+                    print("Chain is empty")
             while True:
                 try:
-                    total = 0
-                    print(f"Total number of blocks = {index - 1}")
-                    number = int(input("What block do you want to see? Choose a number: "))
-                    if number-1 == 0:
-                        print("Pick a number from the list")
-                        for transaction in blockchain[number-1].data:
-                            print(transaction)
-                            total +=1 
-                        print(f"Block Id: {blockchain[number-1].blockId}")
-                        print(f"Total transactions = {total}\n")
-                        print(f"Block has been validated: {blockchain[number-1].validBlock}")
-                        break
-                    else:
-                        print("Please choose one of the options:\n")
-                        break
+                        total = 0
+                        print(f"Total number of blocks = {index - 1}")
+                        number = int(input("What block do you want to see? Choose a number: "))
+                        if number == 0:
+                            print("Pick a number from the list")
+                        else:
+                            for transaction in blockchain[number-1].data:
+                                print(transaction)
+                                total +=1 
+                            print(f"Block Id: {blockchain[number-1].blockId}")
+                            print(f"Total transactions = {total}\n")
+                            print(f"Block has been validated: {blockchain[number-1].validBlock}")
+                            break
                 except:
                     print("Pick a number from the list")
     def print_last_block_in_chain(self):

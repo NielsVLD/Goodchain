@@ -22,8 +22,7 @@ class Login:
                         
                         amount = 50
                         receiver = username
-                        tx1 = TransferCoins.transferCoins("system").create_mock_transaction(receiver, amount)
-                        print(tx1)
+                        tx1 = TransferCoins.transferCoins("system").signup_reward(receiver, amount)
                         Mine("system").add_system_block_to_chain(tx1)
 
         

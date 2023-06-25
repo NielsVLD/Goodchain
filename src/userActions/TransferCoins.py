@@ -249,5 +249,22 @@ class transferCoins:
         
             print("Error while trying to create a signup reward")
 
+    def signup_reward(self, receiver, amount):
+            try:
+                Tx1 = Tx()
+                sender_prv, sender_pbc = self.get_sender_credentials()
+                receiver_prv, receiver_pbc = self.get_receiver_credentials(receiver)
 
-    
+                Tx1.add_input(sender_pbc, amount)
+                Tx1.add_output(receiver_pbc, amount)
+                Tx1.sign(sender_prv)
+                Tx1.add_username(self.sender)
+
+                if Tx1.is_valid():
+                    Tx1.add_status(True)
+                    return Tx1
+                else:
+                    return None
+            except:
+                print("Error while creating transaction\n")
+        
