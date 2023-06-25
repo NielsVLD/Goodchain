@@ -39,8 +39,8 @@ class UserInterface:
         Daemon().validate_pending_blocks_in_chain(user)
     
 
-        if not Helper().check_hash('data/pool.dat'):
-            exit("Tampering with pool detected!")
+        # if not Helper().check_hash('data/pool.dat'):
+        #     exit("Tampering with pool detected!")
         if not Helper().check_hash('data/blockchain.dat'):
             exit("Tampering with the blockchain detected!")
 

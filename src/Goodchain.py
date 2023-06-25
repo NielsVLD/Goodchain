@@ -26,7 +26,7 @@ if __name__ == "__main__":
         Helper().create_hash('data/pool.dat')
     try:
         file = open('data/blockchainHash.txt', "rb+")
-        storedBlockchainHash = pickle.load(file)
+        storedBlockchainHash = file.read()
     except:
         Helper().create_hash('data/blockchain.dat')
 

@@ -76,14 +76,13 @@ class Mine:
         except:
             print("Error while making a transaction block for mining")
     def add_block_to_blockchain(self, block):
-        try:
-            if not Helper().check_hash('data/blockchain.dat'):
-                exit("Tampering with the blockchain detected!")
+     
+            # if not Helper().check_hash('data/blockchain.dat'):
+            #     exit("Tampering with the blockchain detected!")
             file = open(self.path_blockchain, "ab+")
             pickle.dump(block, file)
             file.close()
-            print("Block added to blockchain\n")
-        except:
+      
             print("Error while trying to add a block to the chain")
 
     def mine_block(self, block):
@@ -103,6 +102,7 @@ class Mine:
                     self.add_block_to_blockchain(block)
                     Helper().create_hash('data/blockchain.dat')
                     
+                        
                     for transaction in block.data:
                         Helper().delete_transaction_in_pool(transaction)
                     database = Database("userDatabase.db")
@@ -159,16 +159,13 @@ class Mine:
 
     def system_mine_block(self, block):
                 if self.check_if_chain_is_valid():
-                    try:     
                         if block.mine_block(self.username):
-                            pass
-                            block.validBlock = True
                             self.add_block_to_blockchain(block)
                             Helper().create_hash('data/blockchain.dat')
                         else:
                             print("Error while trying to mine block")
 
-                    except:
+           
                         print("Error while trying to mine a block")
                 else:
                     print("Cannot mine a block. Chain is not valid.")
