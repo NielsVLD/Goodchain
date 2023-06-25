@@ -230,8 +230,8 @@ class transferCoins:
         except:
             print("Error while trying to modify a transaction")
 
-    def create_signup_reward(self, receiver, amount):
-        try:
+    def create_mock_transaction(self, receiver, amount):
+       
             Tx1 = Tx()
             sender_prv, sender_pbc = self.get_sender_credentials()
             receiver_prv, receiver_pbc = self.get_receiver_credentials(receiver)
@@ -243,9 +243,11 @@ class transferCoins:
 
             if Tx1.is_valid():
                 Tx1.add_status(True)
-                self.save_transaction_in_pool(Tx1)
-                Helper().create_hash(self.path_pool)
+                return Tx1
             else:
                 print("Invalid transaction")
-        except:
+        
             print("Error while trying to create a signup reward")
+
+
+    
