@@ -243,8 +243,8 @@ class transferCoins:
 
             if Tx1.is_valid():
                 Tx1.add_status(True)
-                self.save_transaction_in_pool(Tx1)
                 Helper().create_hash(self.path_pool)
+                return Tx1
             else:
                 print("Invalid transaction")
         except:

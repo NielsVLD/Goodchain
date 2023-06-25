@@ -6,7 +6,7 @@ import random
 from Helper import *
 
 REWARD_VALUE = 50
-leading_zeros = 2
+leading_zeros = 1
 next_char_limit = 20
 isValidBlock = None
 validatedByUser = None

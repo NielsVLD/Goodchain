@@ -95,32 +95,36 @@ class Helper:
         else:
             index = 1
             for block in blockchain:
-                if index == 1:
-                    print(f"Genesis block {index} with ID: {block.blockId}")
-                    print("\n")
-                    index += 1
-                else:
+                if block.validBlock:
+                    if index == 1:
+                        print(f"Genesis block {index} with ID: {block.blockId}")
+                        print("\n")
+                        index += 1
+                    else:
 
-                    print(f"Block {index} with ID: {block.blockId}")
-                    print("\n")
-                    index += 1
+                        print(f"Block {index} with ID: {block.blockId}")
+                        print("\n")
+                        index += 1
             while True:
                 try:
                     total = 0
                     print(f"Total number of blocks = {index - 1}")
-                    number = int(input("What block do you want to see? Choose a number: "))
-                    if number-1 == 0:
-                        print("Pick a number from the list")
-                        for transaction in blockchain[number-1].data:
-                            print(transaction)
-                            total +=1 
-                        print(f"Block Id: {blockchain[number-1].blockId}")
-                        print(f"Total transactions = {total}\n")
-                        print(f"Block has been validated: {blockchain[number-1].validBlock}")
+                    if index - 1 == 0:
                         break
                     else:
-                        print("Please choose one of the options:\n")
-                        break
+                        number = int(input("What block do you want to see? Choose a number: "))
+                        if number-1 == 0:
+                            print("Pick a number from the list")
+                            for transaction in blockchain[number-1].data:
+                                print(transaction)
+                                total +=1 
+                            print(f"Block Id: {blockchain[number-1].blockId}")
+                            print(f"Total transactions = {total}\n")
+                            #print(f"Block has been validated: {blockchain[number-1].validBlock}")
+                            break
+                        else:
+                            print("Please choose one of the options:\n")
+                            break
                 except:
                     print("Pick a number from the list")
     def print_last_block_in_chain(self):
@@ -128,26 +132,30 @@ class Helper:
         if blockchain == []:
             print("Chain is empty")
         else:
-            if len(blockchain) == 1:
-                    print(f"Genesis block with ID: {blockchain[-1].blockId}")
-                    print("\n")
+            if blockchain[-1].validBlock == False:
+                print("Chain is empty")
             else:
 
-                print(f"Block with ID: {blockchain[-1].blockId}")
-                print("\n")
-            while True:
-                try:
-                    total = 0
-                    for transaction in blockchain[-1].data:
-                        print(transaction)
-                        total +=1 
-                    print(f"Block Id: {blockchain[-1].blockId}")
-                    print(f"Total transactions = {total}")
-                    print(f"Block has been validated: {blockchain[-1].validBlock}\n")
+                if len(blockchain) == 1:
+                        print(f"Genesis block with ID: {blockchain[-1].blockId}")
+                        print("\n")
+                else:
 
-                    break
-                except:
-                    print("Error when getting blockchain")
+                    print(f"Block with ID: {blockchain[-1].blockId}")
+                    print("\n")
+                while True:
+                    try:
+                        total = 0
+                        for transaction in blockchain[-1].data:
+                            print(transaction)
+                            total +=1 
+                        print(f"Block Id: {blockchain[-1].blockId}")
+                        print(f"Total transactions = {total}")
+                        print(f"Block has been validated: {blockchain[-1].validBlock}\n")
+
+                        break
+                    except:
+                        print("Error when getting blockchain")
 
     def get_previous_block(self):
         block = []
@@ -281,4 +289,4 @@ class Helper:
         except:
             pass
         
-        return transactions
+        return transactions 

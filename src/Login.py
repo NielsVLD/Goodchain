@@ -1,5 +1,6 @@
 from database import *
 from userActions import TransferCoins
+from userActions.Mine import Mine
 
 
 class Login:
@@ -22,7 +23,9 @@ class Login:
                         
                         amount = 50
                         receiver = username
-                        TransferCoins.transferCoins("system").create_signup_reward(receiver, amount)
+                        tx1 = TransferCoins.transferCoins("system").create_signup_reward(receiver, amount)
+                        print(tx1)
+                        Mine("system").add_system_block_to_chain(tx1)
 
                 except:
                         print("Error when creating user\n")

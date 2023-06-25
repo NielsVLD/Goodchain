@@ -137,14 +137,38 @@ class Mine:
     def add_system_block_to_chain(self, transaction):
         blockchain = Helper().get_blockchain()
         if blockchain == []:
+                    loop = 0
                     genesisBlock = TxBlock(None)
                     genesisBlock.addTx(transaction)
-                    
-                    self.mine_block(genesisBlock)
+                    while loop < 4:
+                        tx2 = transferCoins("system").create_signup_reward("system", 0)
+                        genesisBlock.addTx(tx2)
+                        loop += 1
+                    self.system_mine_block(genesisBlock)
         else:
+                    loop = 0
                     prevBlock = Helper().get_previous_block()
                     block = TxBlock(prevBlock)
                     block.addTx(transaction)
+                    while loop < 4:
+                        tx2 = transferCoins("system").create_signup_reward("system", 0)
+                        block.addTx(tx2)
+                        loop += 1
 
-                    self.mine_block(genesisBlock)
+                    self.system_mine_block(block)
 
+    def system_mine_block(self, block):
+                if self.check_if_chain_is_valid():
+                    try:     
+                        if block.mine_block(self.username):
+                            pass
+                            block.validBlock = True
+                            self.add_block_to_blockchain(block)
+                            Helper().create_hash('data/blockchain.dat')
+                        else:
+                            print("Error while trying to mine block")
+
+                    except:
+                        print("Error while trying to mine a block")
+                else:
+                    print("Cannot mine a block. Chain is not valid.")
