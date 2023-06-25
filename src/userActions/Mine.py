@@ -75,6 +75,7 @@ class Mine:
                     self.mine_block(block)
         except:
             print("Error while making a transaction block for mining")
+
     def add_block_to_blockchain(self, block):
         try:
             if not Helper().check_hash('data/blockchain.dat'):
@@ -103,13 +104,14 @@ class Mine:
                         print("Error while trying to mine block")
 
                     self.add_block_to_blockchain(block)
+                    print(Helper().get_blockchain())
                     Helper().create_hash('data/blockchain.dat')
                     
-                    for transaction in block.data:
-                        Helper().delete_transaction_in_pool(transaction)
-                    database = Database("userDatabase.db")
-                    database.set_time_when_mined(current_time, self.username)
-                    database.close()
+                    # for transaction in block.data:
+                    #     Helper().delete_transaction_in_pool(transaction)
+                    # database = Database("userDatabase.db")
+                    # database.set_time_when_mined(current_time, self.username)
+                    # database.close()
                 except:
                     print("Error while trying to mine a block")
             else:

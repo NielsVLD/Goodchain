@@ -95,7 +95,7 @@ class Helper:
         else:
             index = 1
             for block in blockchain:
-                if block.validBlock:
+                
                     if index == 1:
                         print(f"Genesis block {index} with ID: {block.blockId}")
                         print("\n")

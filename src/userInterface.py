@@ -38,9 +38,10 @@ class UserInterface:
         if not Helper().check_hash('data/blockchain.dat'):
             exit("Tampering with the blockchain detected!")
 
+        Daemon().validate_pending_blocks_in_chain(user)
         Daemon().remove_invalid_transactions_from_pool(user)
         Daemon().remove_invalid_block(user)
-        Daemon().validate_pending_blocks_in_chain(user)
+
     
 
         # if not Helper().check_hash('data/pool.dat'):

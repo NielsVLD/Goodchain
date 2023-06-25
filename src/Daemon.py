@@ -37,6 +37,7 @@ class Daemon:
 
     def validate_pending_blocks_in_chain(self, username):
         blockchain = Helper().get_blockchain()
+        print(blockchain)
         validTransactions = True
         if blockchain != []:
             for block in blockchain:
@@ -58,7 +59,9 @@ class Daemon:
                                 block.isValidBlock.append(False)
                                 block.validatedByUser.append(username)
                                 print("Daemon validated a pending block false")
-
+                        else:
+                            print("not user")
+                            print(foundUser)
                         if len(block.isValidBlock) != 0:
                             if block.isValidBlock[-1] and block.isValidBlock.count(True) == 3 and block.validBlock == False:
                                 block.validBlock = True
