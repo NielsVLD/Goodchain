@@ -4,6 +4,7 @@ from userActions import TransferCoins
 from Helper import Helper
 from Daemon import Daemon
 from userActions.Mine import Mine
+from Validation import Validation
 
 class UserInterface:
     def main_screen(self):
@@ -36,7 +37,7 @@ class UserInterface:
         # Automatic stuff
         if not Helper().check_hash('data/blockchain.dat'):
             exit("Tampering with the blockchain detected!")
-            
+
         Daemon().remove_invalid_transactions_from_pool(user)
         Daemon().remove_invalid_block(user)
         Daemon().validate_pending_blocks_in_chain(user)
@@ -46,7 +47,7 @@ class UserInterface:
         #     exit("Tampering with pool detected!")
 
         while True:
-            choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Modify a transaction in the pool", "See history of transactions", "Mine a block", "Logout", "Exit"])
+            choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Modify a transaction in the pool", "See history of transactions", "Mine a block", "Validate", "Logout", "Exit"])
             if choice == 1:
                 TransferCoins.transferCoins(user).transfer_coins_ui()
             if choice == 2:
@@ -86,8 +87,10 @@ class UserInterface:
                     exit("Tampering with the blockchain detected!")
                 Mine(user).mine_ui()
             if choice == 9:
-                self.main_screen()
+                Validation().validation_ui()
             if choice == 10:
+                self.main_screen()
+            if choice == 11:
                 exit("Goodbye")
             else:
                 self.logged_in_screen

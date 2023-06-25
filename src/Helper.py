@@ -119,6 +119,10 @@ class Helper:
                             print(f"Block Id: {blockchain[number-1].blockId}")
                             print(f"Total transactions = {total}\n")
                             print(f"Block has been validated: {blockchain[number-1].validBlock}")
+                            print(f"Block has been validated: {blockchain[number-1].isValidBlock}")
+                            print(f"Block has been validated by: {blockchain[number-1].validatedByUser}")
+
+
                             break
                 except:
                     print("Pick a number from the list")
@@ -281,3 +285,4 @@ class Helper:
             pass
         
         return transactions
+    
