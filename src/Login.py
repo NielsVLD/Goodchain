@@ -1,6 +1,6 @@
 from database import *
 from userActions import TransferCoins
-
+from Helper import Helper
 
 class Login:
         def sign_up(self):
@@ -35,7 +35,19 @@ class Login:
                 try:
                         login = database.login(username=username, password=password)
                         if(login):
-                                
+                                chain = Helper().get_blockchain()
+                                print(f"Welcome {username}\n")
+                                block_num = 0
+                                transaction_num = 0
+                                for block in chain:
+                                        if block.validBlock:
+                                                block_num += 1
+                                                for transaction in block.data:
+                                                        transaction_num += 1
+                                print(f"Number of valid blocks in the chain is {block_num}")
+                                print(f"Number of transactions in blocks on chain is {transaction_num}\n")
+
+
                                 return username
                         else:   
                                 print("Username or password incorrect")
