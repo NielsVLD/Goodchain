@@ -87,6 +87,8 @@ class Mine:
             print("Error while trying to add a block to the chain")
 
     def mine_block(self, block):
+            if not Helper().check_hash('data/blockchain.dat'):
+                exit("Tampering with the blockchain detected!")
             if self.check_if_chain_is_valid():
                 try:     
                     start_time = time.time()

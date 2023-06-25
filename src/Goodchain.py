@@ -19,16 +19,21 @@ if __name__ == "__main__":
     pathlib.Path('data/transactionHistory.txt').touch()
 
 
-    try:
-        file = open('data/poolHash.txt', "rb+")
-        storedPoolHash = pickle.load(file)
-    except:
-        Helper().create_hash('data/pool.dat')
-    try:
-        file = open('data/blockchainHash.txt', "rb+")
-        storedBlockchainHash = pickle.load(file)
-    except:
+    # try:
+    #     file = open('data/poolHash.txt', "rb+")
+    #     storedPoolHash = pickle.load(file)
+    # except:
+    #     Helper().create_hash('data/pool.dat')
+    # try:
+    #     file = open('data/blockchainHash.txt', "rb+")
+    #     storedBlockchainHash = pickle.load(file)
+    # except:
+    #     Helper().create_hash('data/blockchain.dat')
+
+    f = open("data/blockchainHash.txt", "r")
+    if f.read() == '':
         Helper().create_hash('data/blockchain.dat')
+
 
     # try:
     #     file = open('data/transactionHistory.txt', "rb+")
@@ -42,4 +47,3 @@ if __name__ == "__main__":
     database.close()
 
     UserInterface().main_screen()
-    UserInterface().logged_in_screen("niels")
