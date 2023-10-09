@@ -37,15 +37,10 @@ class UserInterface:
         # Automatic stuff
         if not Helper().check_hash('data/blockchain.dat'):
             exit("Tampering with the blockchain detected!")
-
+            
         Daemon().validate_pending_blocks_in_chain(user)
         Daemon().remove_invalid_transactions_from_pool(user)
         Daemon().remove_invalid_block(user)
-
-    
-
-        # if not Helper().check_hash('data/pool.dat'):
-        #     exit("Tampering with pool detected!")
 
         while True:
             choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Modify a transaction in the pool", "See history of transactions", "Mine a block", "Validate", "Logout", "Exit"])
@@ -84,8 +79,6 @@ class UserInterface:
             if choice == 7:
                  Helper().see_history_transactions(user)
             if choice == 8:
-                if not Helper().check_hash('data/blockchain.dat'):
-                    exit("Tampering with the blockchain detected!")
                 Mine(user).mine_ui()
             if choice == 9:
                 Validation().validation_ui()

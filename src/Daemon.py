@@ -37,7 +37,6 @@ class Daemon:
 
     def validate_pending_blocks_in_chain(self, username):
         blockchain = Helper().get_blockchain()
-        print(blockchain)
         validTransactions = True
         if blockchain != []:
             for block in blockchain:
@@ -54,27 +53,37 @@ class Daemon:
                             if validTransactions and block.is_valid():
                                 block.isValidBlock.append(True)
                                 block.validatedByUser.append(username)
-                                print("Daemon validated a pending block true")
+                                print("Daemon validated a pending block true\n")
                             else:
                                 block.isValidBlock.append(False)
                                 block.validatedByUser.append(username)
-                                print("Daemon validated a pending block false")
-                        else:
-                            print("not user")
-                            print(foundUser)
+                                print("Daemon validated a pending block false\n")
+                  
+                  
+                    f1 = open(self.path_blockchain, 'rb+')
+                    f1.seek(0)
+                    f1.truncate()
+                    f1.close()
+
+                    for block in blockchain:
+                        file2 = open(self.path_blockchain, "ab+")
+                        pickle.dump(block, file2)
+                        file2.close()
+
+                    blockchain = Helper().get_blockchain()
+                    for block in blockchain:
                         if len(block.isValidBlock) != 0:
                             if block.isValidBlock[-1] and block.isValidBlock.count(True) == 3 and block.validBlock == False:
                                 block.validBlock = True
-                                self.create_mining_reward(block)
-
-                            f1 = open(self.path_blockchain, 'rb+')
-                            f1.seek(0)
-                            f1.truncate()
-                            f1.close()
-
+                                self.create_mining_reward(block)   
+                        f1 = open(self.path_blockchain, 'rb+')
+                        f1.seek(0)
+                        f1.truncate()
+                        f1.close()
+                        for block in blockchain:
                             file2 = open(self.path_blockchain, "ab+")
                             pickle.dump(block, file2)
-                            file2.close()
+                            file2.close()       
         Helper().create_hash('data/blockchain.dat')
 
 

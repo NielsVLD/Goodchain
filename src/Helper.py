@@ -30,8 +30,7 @@ class Helper:
         print(f"Total in pool = {total}\n")
         
     def is_pool_empty(self):
-        # if not Helper().check_hash('data/pool.dat'):
-        #    exit("Tampering with pool detected!")
+
         pool = []
         file = open(self.path_pool, "rb")
         try:
@@ -95,7 +94,7 @@ class Helper:
         else:
             index = 1
             for block in blockchain:
-                
+                if block.validBlock:
                     if index == 1:
                         print(f"Genesis block {index} with ID: {block.blockId}")
                         print("\n")
@@ -107,22 +106,23 @@ class Helper:
                         index += 1
             while True:
                 try:
-                        total = 0
-                        print(f"Total number of blocks = {index - 1}")
-                        number = int(input("What block do you want to see? Choose a number: "))
-                        if number == 0:
-                             print("Pick a number from the list")
+                        if index != 1:
+                            total = 0
+                            print(f"Total number of blocks = {index - 1}")
+                            number = int(input("What block do you want to see? Choose a number: "))
+                            if number == 0:
+                                print("Pick a number from the list")
+                            else:
+                                if blockchain[number-1].validBlock:
+                                    for transaction in blockchain[number-1].data:
+                                        print(transaction)
+                                        total +=1 
+                                    print(f"Block Id: {blockchain[number-1].blockId}")
+                                    print(f"Total transactions = {total}\n")
+                                    print(f"Block has been validated: {blockchain[number-1].validBlock}")
+                            break
                         else:
-                            for transaction in blockchain[number-1].data:
-                                print(transaction)
-                                total +=1 
-                            print(f"Block Id: {blockchain[number-1].blockId}")
-                            print(f"Total transactions = {total}\n")
-                            print(f"Block has been validated: {blockchain[number-1].validBlock}")
-                            print(f"Block has been validated: {blockchain[number-1].isValidBlock}")
-                            print(f"Block has been validated by: {blockchain[number-1].validatedByUser}")
-
-
+                            print("Chain is empty\n")
                             break
                 except:
                     print("Pick a number from the list")
@@ -167,8 +167,7 @@ class Helper:
         return block[index-1]
 
     def delete_transaction_in_pool(self, transaction):
-        # if not Helper().check_hash('data/pool.dat'):
-        #    exit("Tampering with pool detected!")
+
         pool = self.get_pool()
         new_pool = []
         for transaction_pool in pool:
@@ -228,6 +227,7 @@ class Helper:
                 sha256.update(block)
             hashed_blockchain = sha256.hexdigest()
 
+           
             file = open(self.path_blockchainHash, "w")
             file.write(hashed_blockchain)
             file.close()
@@ -260,18 +260,7 @@ class Helper:
             storedBlockchainHash = file.read()
 
             result = hashed_blockchain == storedBlockchainHash
-            return result
-
-        # if path == self.path_transactionHistory:
-        #     digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
-        #     digest.update(bytes(str(history),'utf8'))
-        #     hashed_history = digest.finalize()
-            
-        #     file = open(self.path_transactionHistory, "rb+")
-        #     storedTransHist = pickle.load(file)
-
-        #     result = hashed_history == storedTransHist
-        #     return result
+            return True
 
 
     def get_history(self):

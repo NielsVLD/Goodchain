@@ -20,8 +20,7 @@ class transferCoins:
                 total_input, total_output = Helper().calculate_balance(self.sender)
                 balance = total_output - total_input
                 transaction = self.create_transaction(receiver, amount, transaction_fee)
-                # self.save_transaction_in_pool(transaction)
-                # Helper().create_hash(self.path_pool)
+
 
                 if receiver == self.sender:
                     print("Cannot make a transaction to yourself\n")
@@ -29,7 +28,7 @@ class transferCoins:
                     if amount == 0:
                         print("Amount to be send needs to be bigger than 0 to make a transaction\n")
                     else:
-                        if balance <= 0:
+                        if balance <= 0 or amount > balance:
                             print(f"Balance too low to make a transaction. Balance is: {float(balance)}")
                         else:
                             transaction = self.create_transaction(receiver, amount, transaction_fee)

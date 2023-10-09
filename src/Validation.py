@@ -37,18 +37,22 @@ class Validation:
                         index += 1
             while True:
                 try:
-                        total = 0
-                        print(f"Total number of blocks = {index - 1}")
-                        number = int(input("What block do you want to validate? Choose a number: "))
-                        if number == 0:
-                            print("Pick a number from the list")
-                        else:
-                            if blockchain[number-1].is_valid():
-                                print(f"Block is valid\n")
-                                break
+                        if index != 1:
+                            total = 0
+                            print(f"Total number of blocks = {index - 1}")
+                            number = int(input("What block do you want to validate? Choose a number: "))
+                            if number == 0:
+                                print("Pick a number from the list")
                             else:
-                                print(f"Block is valid\n")
-                                break
+                                if blockchain[number-1].is_valid():
+                                    print(f"Block is valid\n")
+                                    break
+                                else:
+                                    print(f"Block is valid\n")
+                                    break
+                        else:
+                            print("Chain is empty\n")
+                            break
                 except:
                     print("Pick a number from the list")
 
@@ -58,15 +62,16 @@ class Validation:
             if blockchain == []:
                 print("Chain is empty")
             else:
-                print(f"\nTotal blocks in chain is {len(blockchain)}.")
+                #print(f"\nTotal blocks in chain is {len(blockchain)}.")
                 x = 0
                 for block in blockchain:
-                    if block.is_valid():
-                        print(f"Block with ID: {block.blockId} is valid.")
-                    else:
-                        print(f"Block with ID: {block.blockId} is invalid!")
-                        x += 1
-                if x != 0:
-                    print("Chain is not valid!\n")
+                    if block.validBlock:
+                        if block.is_valid():
+                            print(f"Block with ID: {block.blockId} is valid.")
+                        else:
+                            print(f"Block with ID: {block.blockId} is invalid!")
+                            x += 1
+                if x == 0:
+                    print("Chain is empty\n")
 
                     
