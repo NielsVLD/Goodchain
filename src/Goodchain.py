@@ -19,9 +19,9 @@ if __name__ == "__main__":
     pathlib.Path('data/transactionHistory.txt').touch()
     
 
-    f = open("data/blockchainHash.txt", "r")
-    if f.read() == '':
-        Helper().create_hash('data/blockchain.dat')
+    with open("data/blockchainHash.txt", "r") as f:
+        if f.read() == '':
+            Helper().create_hash('data/blockchain.dat')
 
     # try:
     #     file = open('data/blockchainHash.txt', "rb+")

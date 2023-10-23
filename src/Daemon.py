@@ -10,14 +10,13 @@ class Daemon:
         sender_prv, sender_pbc = transferCoins(username).get_sender_credentials()
         transactions = []
         index = 0
-        file = open(self.path_pool, "rb")
-
-        try:
-            while True:
-                data = pickle.load(file)
-                transactions.append(data)
-        except:
-            pass
+        with open(self.path_pool, "rb") as file:
+            try:
+                while True:
+                    data = pickle.load(file)
+                    transactions.append(data)
+            except EOFError:
+                pass
         
         for transaction in transactions:
             for valid in transaction.isValidTx:
@@ -26,13 +25,13 @@ class Daemon:
                     print("Daemon removed invalid transactions from pool\n")
             index += 1
         
-        f1 = open(self.path_pool, 'rb+')
-        f1.seek(0)
-        f1.truncate()
+        with open(self.path_pool, 'rb+') as f1:
+            f1.seek(0)
+            f1.truncate()
 
         for transaction in transactions:
-            file2 = open(self.path_pool, "ab+")
-            pickle.dump(transaction, file2)
+            with open(self.path_pool, "ab+") as file2:
+                pickle.dump(transaction, file2)
         Helper().create_hash('data/blockchain.dat')
 
     def validate_pending_blocks_in_chain(self, username):
@@ -60,15 +59,14 @@ class Daemon:
                                 print("Daemon validated a pending block false\n")
                   
                   
-                    f1 = open(self.path_blockchain, 'rb+')
-                    f1.seek(0)
-                    f1.truncate()
-                    f1.close()
+                    with open(self.path_blockchain, 'rb+') as f1:
+                        f1.seek(0)
+                        f1.truncate()
 
                     for block in blockchain:
-                        file2 = open(self.path_blockchain, "ab+")
-                        pickle.dump(block, file2)
-                        file2.close()
+                        with open(self.path_blockchain, "ab+") as file2:
+                            pickle.dump(block, file2)
+                        
 
                     blockchain = Helper().get_blockchain()
                     for block in blockchain:
@@ -76,14 +74,12 @@ class Daemon:
                             if block.isValidBlock[-1] and block.isValidBlock.count(True) == 3 and block.validBlock == False:
                                 block.validBlock = True
                                 self.create_mining_reward(block)   
-                        f1 = open(self.path_blockchain, 'rb+')
-                        f1.seek(0)
-                        f1.truncate()
-                        f1.close()
+                        with open(self.path_blockchain, 'rb+') as f1:
+                            f1.seek(0)
+                            f1.truncate()
                         for block in blockchain:
-                            file2 = open(self.path_blockchain, "ab+")
-                            pickle.dump(block, file2)
-                            file2.close()       
+                            with open(self.path_blockchain, "ab+") as file2:
+                                pickle.dump(block, file2)
         Helper().create_hash('data/blockchain.dat')
 
 
@@ -102,20 +98,34 @@ class Daemon:
                         if transaction.is_valid():
                             file2 = open(self.path_pool, "ab+")
                             pickle.dump(transaction, file2)
+                            file2.close()
                 else:
                     f1 = open(self.path_blockchain, 'rb+')
                     f1.seek(0)
                     f1.truncate()
+                    f1.close()
                     file2 = open(self.path_blockchain, "ab+")
                     pickle.dump(block, file2)
+                    file2.close()
                     Helper().create_hash('data/blockchain.dat')
 
     def create_mining_reward(self, block):
         receiver = block.createdBy
         amount = 50
+        input_amt = 0
+        output_amt = 0
         transaction_fee = 0
         Tx2 = transferCoins("system")
+
+        for transaction in block.data:
+            for addr, amt in transaction.inputs:
+                input_amt += amt
+
+            for addr, amt in transaction.outputs:
+                output_amt += amt
         
+        amount = amount + (input_amt - output_amt)
+
         reward_transaction = Tx2.create_transaction(receiver, amount, transaction_fee)
         Tx2.save_transaction_in_pool(reward_transaction)
         Helper().create_hash('data/pool.dat')

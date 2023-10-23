@@ -48,8 +48,6 @@ class UserInterface:
                 TransferCoins.transferCoins(user).transfer_coins_ui()
             if choice == 2:
                 total_input, output = Helper().calculate_balance(user)
-                print(f"Total coins send to other users = {total_input}")
-                print(f"Total coins received from users = {output}")
                 print(f"Total balance = {output - total_input}")
 
             if choice == 3:
@@ -71,6 +69,7 @@ class UserInterface:
 
 
             if choice == 4:
+                # Mine(user).new_block()
                 Helper().print_pool()
             if choice == 5:
                 TransferCoins.transferCoins(user).cancel_transaction_in_pool()

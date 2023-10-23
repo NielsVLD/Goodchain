@@ -19,7 +19,7 @@ class transferCoins:
                 transaction_fee = float(input("What is the transaction fee?: "))
                 total_input, total_output = Helper().calculate_balance(self.sender)
                 balance = total_output - total_input
-                transaction = self.create_transaction(receiver, amount, transaction_fee)
+                #transaction = self.create_transaction(receiver, amount, transaction_fee)
 
 
                 if receiver == self.sender:
@@ -28,7 +28,7 @@ class transferCoins:
                     if amount == 0:
                         print("Amount to be send needs to be bigger than 0 to make a transaction\n")
                     else:
-                        if balance <= 0 or amount > balance:
+                        if balance <= 0 or amount + transaction_fee > balance:
                             print(f"Balance too low to make a transaction. Balance is: {float(balance)}")
                         else:
                             transaction = self.create_transaction(receiver, amount, transaction_fee)
@@ -47,8 +47,8 @@ class transferCoins:
             sender_prv, sender_pbc = self.get_sender_credentials()
             receiver_prv, receiver_pbc = self.get_receiver_credentials(receiver)
 
-            Tx1.add_input(sender_pbc, amount)
-            Tx1.add_output(receiver_pbc, amount - transaction_fee)
+            Tx1.add_input(sender_pbc, amount + transaction_fee)
+            Tx1.add_output(receiver_pbc, amount)
             Tx1.sign(sender_prv)
             Tx1.add_username(self.sender)
 
@@ -115,15 +115,15 @@ class transferCoins:
                 transactions = []
                 transactions_to_delete = []
                 index = 0
-                file = open(self.path_pool, "rb")
-                try:
-                    while True:
-                        data = pickle.load(file)
-                        transactions.append(data)
-                        transactions_to_delete.append(data.inputs)
+                with open(self.path_pool, "rb") as file:
+                    try:
+                        while True:
+                            data = pickle.load(file)
+                            transactions.append(data)
+                            transactions_to_delete.append(data.inputs)
 
-                except:
-                    pass
+                    except:
+                        pass
                 
                 for transaction in transactions:
                     print(f"Transaction {index}: \n {transaction}")
@@ -149,13 +149,13 @@ class transferCoins:
                         print("Please choose one of the options:\n")
                         break
                     
-                f1 = open(self.path_pool, 'rb+')
-                f1.seek(0)
-                f1.truncate()
+                with open(self.path_pool, 'rb+') as f1:
+                    f1.seek(0)
+                    f1.truncate()
 
                 for transaction in transactions:
-                            file2 = open(self.path_pool, "ab+")
-                            pickle.dump(transaction, file2)
+                            with open(self.path_pool, "ab+") as file2:
+                                pickle.dump(transaction, file2)
                 Helper().create_hash(self.path_pool)
             else:       
                 print("Pool is empty, cannot cancel a transaction\n")
@@ -168,15 +168,15 @@ class transferCoins:
                 transactions = []
                 transactions_to_update = []
                 index = 0
-                file = open(self.path_pool, "rb")
-                try:
-                    while True:
-                        data = pickle.load(file)
-                        transactions.append(data)
-                        transactions_to_update.append(data.inputs)
+                with open(self.path_pool, "rb") as file:
+                    try:
+                        while True:
+                            data = pickle.load(file)
+                            transactions.append(data)
+                            transactions_to_update.append(data.inputs)
 
-                except:
-                    pass
+                    except:
+                        pass
                 
                 for transaction in transactions:
                     print(f"Transaction {index}: \n {transaction}")
@@ -210,13 +210,13 @@ class transferCoins:
                             else:
                                 transaction.add_status(False)
                                 print("Invalid transaction, try again")
-                            f1 = open(self.path_pool, 'rb+')
-                            f1.seek(0)
-                            f1.truncate()
+                            with open(self.path_pool, 'rb+') as f1:
+                                f1.seek(0)
+                                f1.truncate()
 
                             for transaction in transactions:
-                                        file2 = open(self.path_pool, "ab+")
-                                        pickle.dump(transaction, file2) 
+                                        with open(self.path_pool, "ab+") as file2:
+                                            pickle.dump(transaction, file2) 
                             Helper().create_hash(self.path_pool)
                         else:
                             print("You can only update your own transactions\n")

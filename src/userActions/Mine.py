@@ -39,13 +39,13 @@ class Mine:
                             print("Invalid transaction detected!")
                             index += 1
                     
-                    f1 = open(self.path_pool, 'rb+')
-                    f1.seek(0)
-                    f1.truncate()
+                    with open(self.path_pool, 'rb+') as f1:
+                        f1.seek(0)
+                        f1.truncate()
 
-                    for transaction in transactions:
-                        file2 = open(self.path_pool, "ab+")
-                        pickle.dump(transaction, file2)
+                    for transaction in transactions: 
+                        with open(self.path_pool, "ab+") as file2:
+                            pickle.dump(transaction, file2)
                     
                     self.mine_block(genesisBlock)
                 else:
@@ -62,13 +62,13 @@ class Mine:
                             print("Invalid transaction detected!")
                             index += 1
 
-                    f1 = open(self.path_pool, 'rb+')
-                    f1.seek(0)
-                    f1.truncate()
+                    with open(self.path_pool, 'rb+') as f1:
+                        f1.seek(0)
+                        f1.truncate()
 
                     for transaction in transactions:
-                        file2 = open(self.path_pool, "ab+")
-                        pickle.dump(transaction, file2)
+                        with open(self.path_pool, "ab+") as file2:
+                            pickle.dump(transaction, file2)
                     
                     self.mine_block(block)
         except:
@@ -78,9 +78,8 @@ class Mine:
         try:
             if not Helper().check_hash('data/blockchain.dat'):
                 exit("Tampering with the blockchain detected!")
-            file = open(self.path_blockchain, "ab+")
-            pickle.dump(block, file)
-            file.close()
+            with open(self.path_blockchain, "ab+") as file:
+                pickle.dump(block, file)
             print("Block added to blockchain\n")
         except:
             print("Error while trying to add a block to the chain")
@@ -103,13 +102,8 @@ class Mine:
 
                     self.add_block_to_blockchain(block)
                     Helper().create_hash('data/blockchain.dat')
-                    
-                    if len(Helper().get_pool()) == 4:
-                        f1 = open(self.path_pool, 'w')
-                        f1.close()
-                    else:
-                        for transaction in block.data:
-                            Helper().delete_transaction_in_pool(transaction)
+
+                    Helper().delete_transaction_in_pool(block)
                         
                     database = Database("userDatabase.db")
                     database.set_time_when_mined(current_time, self.username)
@@ -123,14 +117,16 @@ class Mine:
         database = Database("userDatabase.db")
         time_when_last_mined = database.get_time_when_mined(self.username)
         current_time = time.time()
-        if time_when_last_mined == None:
-            return True
-        else:
-            if current_time < (time_when_last_mined + float(180)):
-                return False
+        # if time_when_last_mined == None:
+        #     return True
+        # else:
+        #     if current_time < (time_when_last_mined + float(180)):
+        #         return False
         return True
 
     def check_if_chain_is_valid(self):
+        # CHECK
+        # return True
         chain = Helper().get_blockchain()
         if chain == []:
             return True
