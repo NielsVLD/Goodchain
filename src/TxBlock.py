@@ -59,6 +59,8 @@ class TxBlock (CBlock):
         
     def mine_block(self, username):
         try:
+            start_time = time.time()
+            target_time = round(random.uniform(10.33, 19.66), 2)
             digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
             digest.update(bytes(str(self.data), 'utf8'))
             digest.update(bytes(str(self.previousHash), 'utf8'))
@@ -70,7 +72,12 @@ class TxBlock (CBlock):
                 temp.update(bytes(str(nonce), 'utf8'))
                 hash = temp.finalize()
                 zeros = bytes('0' * leading_zeros, 'utf8')
-                if hash[:leading_zeros] == zeros:
+                elapsed_time = time.time() - start_time
+                if elapsed_time < target_time:
+                    zeros = bytes('0' * (leading_zeros + 1), 'utf8')
+                else:
+                    zeros = bytes('0' * (leading_zeros - 1), 'utf8')
+                if hash.startswith(zeros):
                     found = True
                     self.nonce = nonce
                 nonce += 1
