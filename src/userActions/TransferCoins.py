@@ -97,7 +97,6 @@ class transferCoins:
 
     def save_transaction_in_pool(self, transaction):
         try:
-
             file = open(self.path_pool, "ab")
             pickle.dump(transaction, file)
             file.close()

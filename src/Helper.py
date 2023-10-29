@@ -182,54 +182,34 @@ class Helper:
             file.truncate()
             file.close()
 
-        # for transaction in new_pool:
-        #     pickle.dump(transaction, f1)
-        # else:
-        #     f1.close()
-
-
-
-        # new_pool = []
-        # for transaction_pool in pool:
-        #     if transaction_pool.id != transaction.id:
-        #         new_pool.append(transaction_pool)
-
-        # f1 = open(self.path_pool, 'rb+')
-        # f1.seek(0)
-        # f1.truncate()
-        # for i in range(len(new_pool)):
-        #     pickle.dump(new_pool[i], f1)
-        # else:
-        #     f1.close()
-        # self.create_hash(self.path_pool)
+            for i in range(len(new_pool)):
+                pickle.dump(new_pool[i], file)
+        self.create_hash(self.path_pool)
     
     def calculate_balance(self, username):
-
         blockchain = self.get_blockchain()
         pool = self.get_pool()
         database = Database("userDatabase.db")
         result = database.get_credentials(username)
         user_pbc = result[1].encode("utf-8")
         input = 0
-        output = 0
+        output = 50
 
         for block in blockchain:
             for transaction in block.data:
                 for addr, amount in transaction.inputs:
                     if addr == user_pbc:
                         input += amount
-                for addr, amount in transaction.outputs:
-                        if addr == user_pbc:
-                            output += amount
-                
+                if block.validBlock:
+                    for addr, amount in transaction.outputs:
+                            if addr == user_pbc:
+                                output += amount
+                    
         
         for transaction in pool:
             for addr, amount in transaction.inputs:
                     if addr == user_pbc:
                         input += amount
-            for addr, amount in transaction.outputs:
-                    if addr == user_pbc:
-                        output += amount
         
         total_input = input
         total_output = output

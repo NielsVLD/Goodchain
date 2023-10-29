@@ -19,9 +19,9 @@ class Login:
                         database.close()
                         print("User succesfully added\n")
                         
-                        amount = 50
-                        receiver = username
-                        TransferCoins.transferCoins("system").create_signup_reward(receiver, amount)
+                        # amount = 50
+                        # receiver = username
+                        # TransferCoins.transferCoins("system").create_signup_reward(receiver, amount)
 
                 except:
                         print("Error when creating user\n")
@@ -35,8 +35,6 @@ class Login:
                         login = database.login(username=username, password=password)
                         if(login):
                                 chain = Helper().get_blockchain()
-                                
-                                print(f"Welcome {username}\n")
                                 block_num = 0
                                 transaction_num = 0
                                 for block in chain:
@@ -44,8 +42,6 @@ class Login:
                                                 block_num += 1
                                                 for transaction in block.data:
                                                         transaction_num += 1
-                                print(f"Number of valid blocks in the chain is {block_num}")
-                                print(f"Number of transactions in blocks on chain is {transaction_num}\n")
                                 return username
                         else:   
                                 print("Username or password incorrect")

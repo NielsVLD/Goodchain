@@ -5,6 +5,7 @@ from Helper import Helper
 from Daemon import Daemon
 from userActions.Mine import Mine
 from Validation import Validation
+from Notifications import Notification
 
 class UserInterface:
     def main_screen(self):
@@ -43,7 +44,13 @@ class UserInterface:
         Daemon().remove_invalid_block(user)
 
         while True:
-            choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Modify a transaction in the pool", "See history of transactions", "Mine a block", "Validate", "Logout", "Exit"], user)
+            input_amount, output_amount = Helper().calculate_balance(user)
+            print(f"\nWelcome {user}! | Balance: {output_amount - input_amount}\n")
+
+            Notification(user).show_notifications()
+
+            choice: int = self.choices(["Transfer coins", "Check the balance", "Explore the blockchain", "Check the pool", "Cancel a transaction", "Modify a transaction in the pool", "See history of transactions", "Mine a block", "Validate", "Logout", "Exit"])
+        
             if choice == 1:
                 TransferCoins.transferCoins(user).transfer_coins_ui()
             if choice == 2:
@@ -93,10 +100,7 @@ class UserInterface:
 
 
 
-    def choices(self, choices, user="", question="Which option do you want to choose?: "):
-        if user != "":
-            input_amount, output_amount = Helper().calculate_balance(user)
-            print(f"Welcome {user}! | Balance: {output_amount - input_amount}\n")
+    def choices(self, choices, question="Which option do you want to choose?: "):
         for idx, choice in enumerate(choices):
             print(f"{idx + 1}. {choice}")
         c = input(question)
