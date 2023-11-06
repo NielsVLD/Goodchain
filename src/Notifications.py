@@ -33,7 +33,9 @@ class Notification:
 
     def show_pending_block_status(self):
         # Any block which was on pending and is confirmed or rejected by this user after login
+        # This is in the daemon validate blocks.
         pass
+            
 
     def show_reward(self):
         # Reward notification if there was any reward pending for confirmation from other nodes

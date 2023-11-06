@@ -86,11 +86,12 @@ class Helper:
             except EOFError:
                 pass
         
-        file.close()
+
         return blockchain
     
     def print_blockchain(self):
         blockchain = self.get_blockchain()
+        print(blockchain)
         if blockchain == []:
             print("Chain is empty")
         else:
@@ -102,7 +103,6 @@ class Helper:
                         print("\n")
                         index += 1
                     else:
-
                         print(f"Block {index} with ID: {block.blockId}")
                         print("\n")
                         index += 1
@@ -170,18 +170,13 @@ class Helper:
         return block[index-1]
 
     def delete_transaction_in_pool(self, block):
-        new_pool = []
         pool = self.get_pool()
-
-        for transaction in pool:
-            if transaction not in block.data:
-                new_pool.append(transaction)
-
+        block_transaction_ids = {transaction.id for transaction in block.data}
+        new_pool = [transaction for transaction in pool if transaction.id not in block_transaction_ids]
 
         with open(self.path_pool, 'wb') as file:
+            file.seek(0)
             file.truncate()
-            file.close()
-
             for i in range(len(new_pool)):
                 pickle.dump(new_pool[i], file)
         self.create_hash(self.path_pool)
@@ -271,7 +266,7 @@ class Helper:
                 storedBlockchainHash = file.read()
 
             result = hashed_blockchain == storedBlockchainHash
-            return True
+            return result
 
 
     def get_history(self):

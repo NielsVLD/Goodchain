@@ -80,7 +80,7 @@ class Mine:
                 exit("Tampering with the blockchain detected!")
             with open(self.path_blockchain, "ab+") as file:
                 pickle.dump(block, file)
-            print("Block added to blockchain\n")
+            print("Block waiting for validation.\n")
         except:
             print("Error while trying to add a block to the chain")
 
@@ -108,8 +108,8 @@ class Mine:
                     database = Database("userDatabase.db")
                     database.set_time_when_mined(current_time, self.username)
                     database.close()
-                except:
-                    print("Error while trying to mine a block")
+                except Exception as e:
+                    print(e)
             else:
                 print("Cannot mine a block. Chain is not valid.")
 

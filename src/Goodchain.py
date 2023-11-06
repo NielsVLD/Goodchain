@@ -23,13 +23,9 @@ if __name__ == "__main__":
         if f.read() == '':
             Helper().create_hash('data/blockchain.dat')
 
-    # try:
-    #     file = open('data/blockchainHash.txt', "rb+")
-    #     storedBlockchainHash = pickle.load(file)
-    # except:
-    #     Helper().create_hash('data/blockchain.dat')
-
-
+    if not Helper().check_hash('data/blockchain.dat'):
+            exit("Tampering with the blockchain detected!")
+            
     database = Database("userDatabase.db")
     database.check_migrations()
     database.close()
