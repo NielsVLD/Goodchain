@@ -5,6 +5,7 @@ from Transaction import *
 from database import *
 from TxBlock import TxBlock
 from Helper import Helper
+
 class transferCoins:
     path_pool = 'data/pool.dat'
     path_transactionHistory = 'data/transactionHistory.dat'
@@ -13,7 +14,7 @@ class transferCoins:
         self.sender = sender
     
     def transfer_coins_ui(self):
-            try:
+            # try:
                 receiver = input("What is the username of the receiver of the transaction?: ")
                 amount = float(input("What is the amount to be send?: "))
                 transaction_fee = float(input("What is the transaction fee?: "))
@@ -38,8 +39,9 @@ class transferCoins:
                                 self.save_transaction_in_pool(transaction)
                                 Helper().create_hash(self.path_pool)
                                 print("Transaction successfully created and added to pool\n")
-            except:
-                print("Error when creating transaction")
+                                # server.send_data("pool")
+            # except:
+            #     print("Error when creating transaction")
 
     def create_transaction(self, receiver, amount, transaction_fee):
         try:
