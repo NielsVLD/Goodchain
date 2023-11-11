@@ -5,6 +5,7 @@ from Transaction import *
 from database import *
 from TxBlock import TxBlock
 from Helper import Helper
+from P2P import server
 
 class transferCoins:
     path_pool = 'data/pool.dat'
@@ -39,7 +40,7 @@ class transferCoins:
                                 self.save_transaction_in_pool(transaction)
                                 Helper().create_hash(self.path_pool)
                                 print("Transaction successfully created and added to pool\n")
-                                # server.send_data("pool")
+                                server.send_data("pool")
             # except:
             #     print("Error when creating transaction")
 

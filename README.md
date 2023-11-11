@@ -7,4 +7,4 @@
 
 ## Run Goodchain
 1. navigate to the src directory 
-2. run: `python Goodchain.py`
+2. run: `python Goodchain.py` 
