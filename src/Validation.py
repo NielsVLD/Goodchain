@@ -1,15 +1,16 @@
 from Helper import Helper
+from Daemon import Daemon
 
 class Validation:
-    def validation_ui(self):
-                print("\n1. Validate a block")
+    def validation_ui(self, user):
+                print("\n1. Validate pending a block")
                 print("2. Validate whole chain")
 
 
                 try:
                     number = int(input("Which option do you want to choose?: "))
                     if number == 1:
-                        self.validate_block_on_chain()
+                        self.validate_pending(user)
                     if number == 2:
                          self.validate_chain()
                     else:
@@ -17,6 +18,8 @@ class Validation:
                 except:
                     print("Please choose one of the options:\n")
 
+    def validate_pending(user):
+        Daemon.validate_pending_blocks_in_chain(user)
 
     def validate_block_on_chain(self):
         blockchain = Helper().get_blockchain()

@@ -81,10 +81,10 @@ class Daemon:
                             with open(self.path_blockchain, "ab+") as file2:
                                 pickle.dump(block, file2)
         Helper().create_hash('data/blockchain.dat')
+        server.send_blockchain_data()
 
 
     def remove_invalid_block(self, username):
-        # Remove transactions and add back to pool
         blockchain = Helper().get_blockchain()
         for block in blockchain:
             if block.validatedByUser != []:
@@ -129,3 +129,4 @@ class Daemon:
         reward_transaction = Tx2.create_transaction(receiver, amount, transaction_fee)
         Tx2.save_transaction_in_pool(reward_transaction)
         Helper().create_hash('data/pool.dat')
+        server.send_pool_data()

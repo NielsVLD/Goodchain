@@ -4,6 +4,7 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 import filecmp
 from pathlib import Path
 import pathlib
+from P2P import server
 class Helper:
 
     path_pool = 'data/pool.dat'
@@ -91,7 +92,6 @@ class Helper:
     
     def print_blockchain(self):
         blockchain = self.get_blockchain()
-        print(blockchain)
         if blockchain == []:
             print("Chain is empty")
         else:
@@ -180,6 +180,7 @@ class Helper:
             for i in range(len(new_pool)):
                 pickle.dump(new_pool[i], file)
         self.create_hash(self.path_pool)
+        server.send_pool_data()
     
     def calculate_balance(self, username):
         blockchain = self.get_blockchain()

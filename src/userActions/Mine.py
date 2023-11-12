@@ -5,6 +5,7 @@ from userActions.TransferCoins import transferCoins
 from BlockChain import CBlock
 import time
 from time import sleep
+from P2P import server
 class Mine:
     path_pool = 'data/pool.dat'
     path_transactionHistory = 'data/transactionHistory.dat'
@@ -104,6 +105,9 @@ class Mine:
                     Helper().create_hash('data/blockchain.dat')
 
                     Helper().delete_transaction_in_pool(block)
+
+                    server.send_pool_data()
+                    server.send_blockchain_data()
                         
                     database = Database("userDatabase.db")
                     database.set_time_when_mined(current_time, self.username)

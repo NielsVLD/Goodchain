@@ -36,8 +36,8 @@ class UserInterface:
 
     def logged_in_screen(self, user):
         # Automatic stuff
-        if not Helper().check_hash('data/blockchain.dat'):
-            exit("Tampering with the blockchain detected!")
+        # if not Helper().check_hash('data/blockchain.dat'):
+        #     exit("Tampering with the blockchain detected!")
             
         Daemon().validate_pending_blocks_in_chain(user)
         Daemon().remove_invalid_transactions_from_pool(user)
@@ -87,7 +87,7 @@ class UserInterface:
             if choice == 8:
                 Mine(user).mine_ui()
             if choice == 9:
-                Validation().validation_ui()
+                Validation().validation_ui(user)
             if choice == 10:
                 self.main_screen()
             if choice == 11:

@@ -159,6 +159,7 @@ class transferCoins:
                             with open(self.path_pool, "ab+") as file2:
                                 pickle.dump(transaction, file2)
                 Helper().create_hash(self.path_pool)
+                server.send_pool_data()
             else:       
                 print("Pool is empty, cannot cancel a transaction\n")
         except:
@@ -220,6 +221,7 @@ class transferCoins:
                                         with open(self.path_pool, "ab+") as file2:
                                             pickle.dump(transaction, file2) 
                             Helper().create_hash(self.path_pool)
+                            server.send_pool_data()
                         else:
                             print("You can only update your own transactions\n")
                         break
@@ -246,6 +248,7 @@ class transferCoins:
                 Tx1.add_status(True)
                 self.save_transaction_in_pool(Tx1)
                 Helper().create_hash(self.path_pool)
+                server.send_pool_data()
             else:
                 print("Invalid transaction")
         except:
