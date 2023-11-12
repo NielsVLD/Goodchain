@@ -1,9 +1,97 @@
+# version: '3'
+
+# services:
+#   node1:
+#     build:
+#       context: .
+#     container_name: node1
+#     command: sleep infinity
+#     ports:
+#       - "5000:5000"
+#     networks:
+#       - p2p-net
+#     environment:
+#       - PEER=node2:5000
+
+#   node2:
+#     build:
+#       context: .
+#     container_name: node2
+#     command: sleep infinity
+#     ports:
+#       - "5001:5000"
+#     environment:
+#       - PEER=node1:5000
+#     networks:
+#       - p2p-net
+
+# networks:
+#   p2p-net:
+#     driver: bridge
+
+# version: '3'
+
+# services:
+#   node1:
+#     build:
+#       context: .
+#     container_name: node1
+#     command: sleep infinity
+#     ports:
+#       - "5001:5000"
+#     environment:
+#       - PEER=node2:5000  # Set the address of the other node
+
+#   node2:
+#     build:
+#       context: .
+#     container_name: node2
+#     command: sleep infinity
+#     ports:
+#       - "5002:5000"
+#     environment:
+#       - PEER=node1:5000  # Set the address of the other node
+
+
+
+# version: '3'
+# services:
+#   node1:
+#     build: .
+#     environment:
+#       - PEER_PORT=5000
+#     command: sleep infinity
+#     ports:
+#       - "5000:5000"
+#     networks:
+#       - P2PNET
+
+#   node2:
+#     build: .
+#     environment:
+#       - PEER_PORT=5001
+#     command: sleep infinity
+#     ports:
+#       - "5001:5000"
+#     networks:
+#       - P2PNET
+
+# networks:
+#   P2PNET:
+#     driver: bridge
+
+
 version: '3'
+
 services:
-  node:
-    build: .
+  blockchain-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: blockchain-server
+    command: sleep infinity
     networks:
-      - blockchain_net
+      - my_network
 
 networks:
-  blockchain_net:
+  my_network:
