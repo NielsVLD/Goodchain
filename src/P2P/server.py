@@ -58,7 +58,7 @@ def receive_broadcast():
                 continue
             else:
                 while data:
-                    try
+                    try:
                         received_data = pickle.loads(data)
                         break
                     except pickle.UnpicklingError:
