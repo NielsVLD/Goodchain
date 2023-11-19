@@ -1,6 +1,8 @@
 from database import *
 from userActions import TransferCoins
 from Helper import Helper
+from P2P import server
+
 class Login:
         def sign_up(self):
                 database = Database("userDatabase.db")
@@ -18,6 +20,7 @@ class Login:
                         database.commit()
                         database.close()
                         print("User succesfully added\n")
+                        server.send_user_database()
                 except:
                         print("Error when creating user\n")
         

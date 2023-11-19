@@ -87,8 +87,21 @@ class Helper:
             except EOFError:
                 pass
         
-
         return blockchain
+    
+    def get_pending_blocks(self):
+        pending_blocks = []
+        with open(self.path_blockchain, "rb+") as file:
+            try:
+                while True:
+                    data = pickle.load(file)
+                    print(data.validBlock)
+                    if not data.validBlock:
+                        pending_blocks.append(data)
+            except EOFError:
+                pass
+    
+        return pending_blocks
     
     def print_blockchain(self):
         blockchain = self.get_blockchain()

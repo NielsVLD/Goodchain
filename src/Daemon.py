@@ -52,11 +52,11 @@ class Daemon:
                             if validTransactions and block.is_valid():
                                 block.isValidBlock.append(True)
                                 block.validatedByUser.append(username)
-                                print("Daemon validated a pending block true\n")
+                                print("Daemon validated a pending block True\n")
                             else:
                                 block.isValidBlock.append(False)
                                 block.validatedByUser.append(username)
-                                print("Daemon validated a pending block false\n")
+                                print("Daemon validated a pending block False\n")
                   
                   
                     with open(self.path_blockchain, 'rb+') as f1:

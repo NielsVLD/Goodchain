@@ -15,7 +15,7 @@ class transferCoins:
         self.sender = sender
     
     def transfer_coins_ui(self):
-            # try:
+            try:
                 receiver = input("What is the username of the receiver of the transaction?: ")
                 amount = float(input("What is the amount to be send?: "))
                 transaction_fee = float(input("What is the transaction fee?: "))
@@ -41,8 +41,8 @@ class transferCoins:
                                 Helper().create_hash(self.path_pool)
                                 print("Transaction successfully created and added to pool\n")
                                 server.send_pool_data()
-            # except:
-            #     print("Error when creating transaction")
+            except:
+                print("Error when creating transaction")
 
     def create_transaction(self, receiver, amount, transaction_fee):
         try:

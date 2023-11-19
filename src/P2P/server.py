@@ -2,9 +2,6 @@ import socket as sock
 import threading
 import pickle
 import socket
-import subprocess
-import sys
-import os
 
 def broadcast_data(data):
 
@@ -36,6 +33,13 @@ def send_blockchain_data():
             data = f.read()
             broadcast_data(pickle.dumps({'Type': 'chain', 'Data': data}))
             print("Blockchain broadcasted.")
+
+def send_user_database():
+        path_database = 'data/userDatabase.db'
+        with open(path_database, 'rb') as f:
+            data = f.read()
+            broadcast_data(pickle.dumps({'Type': 'database', 'Data': data}))
+            print("Database broadcasted.")
 
 
 
@@ -80,6 +84,14 @@ def receive_broadcast():
                     print(f"Received broadcast with chain data.")
                     with open('data/blockchain.dat', 'wb+') as f:
                         f.write(chain_data)
+                
+                elif isinstance(received_data, dict) and received_data.get('Type') == 'database':
+                    database_data = received_data.get('Data')
+                
+                    print(f"Received broadcast with database data.")
+                    with open('data/userDatabase.db', 'wb+') as f:
+                        f.write(database_data)
+
                 else:
                     print(f"Ignoring broadcast with unknown or non-pool data: {received_data}")
 
