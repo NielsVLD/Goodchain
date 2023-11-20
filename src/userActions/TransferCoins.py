@@ -41,6 +41,7 @@ class transferCoins:
                                 Helper().create_hash(self.path_pool)
                                 print("Transaction successfully created and added to pool\n")
                                 server.send_pool_data()
+                                server.send_transaction_history()
             except:
                 print("Error when creating transaction")
 

@@ -36,11 +36,11 @@ class UserInterface:
 
     def logged_in_screen(self, user):
         # Automatic stuff
-        # if not Helper().check_hash('data/blockchain.dat'):
-        #     exit("Tampering with the blockchain detected!")
+        if not Helper().check_hash('data/blockchain.dat'):
+            exit("Tampering with the blockchain detected!")
             
-        # Daemon().validate_pending_blocks_in_chain(user)
-        # Daemon().remove_invalid_transactions_from_pool(user)
+        Daemon().validate_pending_blocks_in_chain(user)
+        Daemon().remove_invalid_transactions_from_pool(user)
         # Daemon().remove_invalid_block(user)
 
         while True:
