@@ -50,6 +50,12 @@ def send_transaction_history():
             broadcast_data(pickle.dumps({'Type': 'history', 'Data': data}))
             print("Transaction History broadcasted.")
 
+def send_blockchain_tamper_data():
+        path_chain = 'data/blockchainHash.txt'
+        with open(path_chain, 'rb') as f:
+            data = f.read()
+            broadcast_data(pickle.dumps({'Type': 'chainTamper', 'Data': data}))
+            print("Blockchain broadcasted.")
 
 
 def receive_broadcast():
@@ -111,6 +117,14 @@ def receive_broadcast():
                     # print(f"\nReceived broadcast with history data.")
                     with open('data/transactionHistory.dat', 'wb+') as f:
                         f.write(history_data)
+                
+                elif isinstance(received_data, dict) and received_data.get('Type') == 'chainTamper':
+                    chain_data = received_data.get('Data')
+                    
+                    message = "\nReceived broadcast with chain data.\n"
+                    # print(f"\nReceived broadcast with chain data.")
+                    with open('data/blockchainHash.txt', 'wb+') as f:
+                        f.write(chain_data)
 
                 else:
                     print(f"Ignoring broadcast with unknown or non-pool data: {received_data}")

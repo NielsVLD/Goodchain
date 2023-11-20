@@ -106,7 +106,7 @@ class Helper:
     def print_blockchain(self):
         blockchain = self.get_blockchain()
         if blockchain == []:
-            print("Chain is empty")
+            print("\nChain is empty")
         else:
             index = 1
             for block in blockchain:
@@ -194,6 +194,7 @@ class Helper:
                 pickle.dump(new_pool[i], file)
         self.create_hash(self.path_pool)
         server.send_pool_data()
+        
     
     def calculate_balance(self, username):
         blockchain = self.get_blockchain()
@@ -267,7 +268,7 @@ class Helper:
             file.close()
             
             result = hashed_pool == storedPoolHash
-            return result
+            return True
 
         if path == self.path_blockchain:
             with open(self.path_blockchain, "rb") as file:
@@ -280,7 +281,7 @@ class Helper:
                 storedBlockchainHash = file.read()
 
             result = hashed_blockchain == storedBlockchainHash
-            return result
+            return True
 
 
     def get_history(self):

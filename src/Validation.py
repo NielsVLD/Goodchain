@@ -2,8 +2,13 @@ from Helper import Helper
 from Daemon import Daemon
 import pickle
 from P2P import server
+from Daemon import Daemon
 
 class Validation:
+    path_pool = 'data/pool.dat'
+    path_transactionHistory = 'data/transactionHistory.dat'
+    path_blockchain = 'data/blockchain.dat'
+
     def validation_ui(self, user):
                 print("\n1. Validate pending a block")
                 print("2. Validate whole chain")
@@ -100,8 +105,9 @@ class Validation:
                                 block.validatedByUser.append(username)
                                 print("Daemon validated a pending block False\n")
                         else:
-                            print("Cannot validate own block or block that has already been validated by you.")
-                  
+                            print("\nError, pending block was already validated by you.")
+                    else:
+                        print("\nError, cannot validate own block.")
                   
                     with open(self.path_blockchain, 'rb+') as f1:
                         f1.seek(0)
@@ -111,144 +117,21 @@ class Validation:
                         with open(self.path_blockchain, "ab+") as file2:
                             pickle.dump(block, file2)
                         
-
-                    blockchain = Helper().get_blockchain()
-                    for block in blockchain:
+                    blockchain2 = Helper().get_blockchain()
+                    for block in blockchain2:
                         if len(block.isValidBlock) != 0:
                             if block.isValidBlock[-1] and block.isValidBlock.count(True) == 3 and block.validBlock == False:
                                 block.validBlock = True
-                                self.create_mining_reward(block)   
-                        with open(self.path_blockchain, 'rb+') as f1:
-                            f1.seek(0)
-                            f1.truncate()
-                        for block in blockchain:
-                            with open(self.path_blockchain, "ab+") as file2:
-                                pickle.dump(block, file2)
+                                Daemon().create_mining_reward(block)
+                            with open(self.path_blockchain, 'rb+') as f1:
+                                f1.seek(0)
+                                f1.truncate()
+                            for block in blockchain2:
+                                with open(self.path_blockchain, "ab+") as file2:
+                                    pickle.dump(block, file2)
         else:
-            print("No block to validate")
+            print("\nNo pending block in chain.")
+
         Helper().create_hash('data/blockchain.dat')
         server.send_blockchain_data()
-
-        # blockchain = Helper().get_blockchain()
-        
-        # if blockchain == []:
-        #     print("Chain is empty.")
-        # else:
-        #     index = 1
-        #     for block in blockchain:
-        #         if not block.validBlock:
-        #             try:
-        #                 # print(f"Total number of blocks = {index - 1}")
-        #                 # number = int(input("What block do you want to validate? Choose a number: "))
-        #                 if block.createdBy != username:
-        #                     foundUser = False
-        #                     for user in block.validatedByUser:
-        #                         if user == username:
-        #                             foundUser = True
-        #                             if not foundUser:
-        #                                 if block.is_valid():
-        #                                     block.isValidBlock.append(True)
-        #                                     block.validatedByUser.append(username)
-        #                                     print("Validated a pending block True\n")
-        #                                 else:
-        #                                     block.isValidBlock.append(False)
-        #                                     block.validatedByUser.append(username)
-                                
-        #                                     print("Validated a pending block False\n")
-                                    
-        #                 else:
-        #                     print("Cannot validate your own block or blocks that have already been validated by you.")
-                        
-        #             except:
-        #                 print("Pick a number from the list")
-                
-        #     with open(self.path_blockchain, 'rb+') as f1:
-        #                 f1.seek(0)
-        #                 f1.truncate()
-
-        #     for block in blockchain:
-        #         with open(self.path_blockchain, "ab+") as file2:
-        #             pickle.dump(block, file2)
-            
-        #     blockchain = Helper().get_blockchain()
-        #     for block in blockchain:
-        #                 if len(block.isValidBlock) != 0:
-        #                     if block.isValidBlock[-1] and block.isValidBlock.count(True) == 3 and block.validBlock == False:
-        #                         block.validBlock = True
-        #                         self.create_mining_reward(block)   
-        #                 with open(self.path_blockchain, 'rb+') as f1:
-        #                     f1.seek(0)
-        #                     f1.truncate()
-        #                 for block in blockchain:
-        #                     with open(self.path_blockchain, "ab+") as file2:
-        #                         pickle.dump(block, file2)
-            
-        #     Helper().create_hash('data/blockchain.dat')
-        #     server.send_blockchain_data()
-                    
-             
-
-    
-    # def validate_pending_block(self, username):
-    #     blockchain = Helper().get_pending_blocks()
-    #     blockchain_full = Helper().get_blockchain()
-    #     if blockchain == []:
-    #         print("Chain is empty")
-    #     else:
-    #         index = 1
-    #         for block in blockchain:
-    #             if not block.validBlock:
-    #                 if index == 1:
-    #                     print(f"Genesis block {index} with ID: {block.blockId}")
-    #                     print("\n")
-    #                     index += 1
-    #                 else:
-    #                     print(f"Block {index} with ID: {block.blockId}")
-    #                     print("\n")
-    #                     index += 1
-    #         while True:
-    #             try:
-    #                     if index != 1:
-    #                         total = 0
-    #                         print(f"Total number of blocks = {index - 1}")
-    #                         number = int(input("What block do you want to validate? Choose a number: "))
-    #                         if number == 0:
-    #                             print("Pick a number from the list")
-    #                         else:
-    #                             block_pending = blockchain[number-1]
-    #                             for block in blockchain_full:
-    #                                 if block.blockId == block_pending.blockId:
-    #                                     if username != block.createdBy:
-    #                                         foundUser = False
-    #                                         for user in block.validatedByUser:
-    #                                             if user == username:
-    #                                                 foundUser = True
-    #                                     if not foundUser:
-    #                                         if blockchain[number-1].is_valid():
-    #                                             block.isValidBlock.append(True)
-    #                                             block.validatedByUser.append(username)
-    #                                             print("Validated a pending block True\n")
-    #                                             break
-    #                                         else:
-    #                                             block.isValidBlock.append(False)
-    #                                             block.validatedByUser.append(username)
-    #                                             print("Validated a pending block False\n")
-    #                                             break
-    #                                 with open(self.path_blockchain, 'rb+') as f1:
-    #                                     f1.seek(0)
-    #                                     f1.truncate()
-
-    #                                 for block in blockchain:
-    #                                     with open(self.path_blockchain, "ab+") as file2:
-    #                                         pickle.dump(block, file2)
-                            
-    #                         Helper().create_hash('data/blockchain.dat')
-    #                         server.send_blockchain_data()
-    #                         break
-    #                     else:
-    #                         print("Chain is empty\n")
-    #                         break
-    #             except:
-    #                 print("Pick a number from the list")
-
-                    
+        server.send_blockchain_tamper_data()

@@ -83,6 +83,7 @@ class Daemon:
                                     pickle.dump(block, file2)
         Helper().create_hash('data/blockchain.dat')
         server.send_blockchain_data()
+        server.send_blockchain_tamper_data()
 
 
     def remove_invalid_block(self, username):

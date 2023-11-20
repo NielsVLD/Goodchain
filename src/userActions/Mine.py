@@ -21,7 +21,7 @@ class Mine:
             print("You cannot mine a block right now. wait a minimum of three minutes in between mining.")
 
     def new_block(self):
-        try:
+        # try:
             transactions = Helper().get_pool()
             blockchain = Helper().get_blockchain()
             if len(transactions) < 5:
@@ -72,8 +72,8 @@ class Mine:
                             pickle.dump(transaction, file2)
                     
                     self.mine_block(block)
-        except:
-            print("Error while making a transaction block for mining")
+        # except:
+        #     print("Error while making a transaction block for mining")
 
     def add_block_to_blockchain(self, block):
         try:
@@ -108,6 +108,7 @@ class Mine:
 
                     server.send_pool_data()
                     server.send_blockchain_data()
+                    server.send_blockchain_tamper_data()
                         
                     database = Database("userDatabase.db")
                     database.set_time_when_mined(current_time, self.username)
