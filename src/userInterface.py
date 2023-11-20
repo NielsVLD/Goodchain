@@ -41,7 +41,6 @@ class UserInterface:
             
         Daemon().validate_pending_blocks_in_chain(user)
         Daemon().remove_invalid_transactions_from_pool(user)
-        Daemon().remove_invalid_block(user)
 
         while True:
             input_amount, output_amount = Helper().calculate_balance(user)

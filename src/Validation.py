@@ -69,12 +69,12 @@ class Validation:
             if blockchain == []:
                 print("Chain is empty")
             else:
-                #print(f"\nTotal blocks in chain is {len(blockchain)}.")
                 x = 0
                 for block in blockchain:
                     if block.validBlock:
                         if block.is_valid():
                             print(f"Block with ID: {block.blockId} is valid.")
+                            x += 1
                         else:
                             print(f"Block with ID: {block.blockId} is invalid!")
                             x += 1

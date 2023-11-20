@@ -69,7 +69,6 @@ class Daemon:
                         
 
                     blockchain2 = Helper().get_blockchain()
-                    print(blockchain2)
                     for block in blockchain2:
                         if len(block.isValidBlock) != 0:
                             if block.isValidBlock[-1] and block.isValidBlock.count(True) == 3 and block.validBlock == False:
@@ -81,6 +80,7 @@ class Daemon:
                             for block in blockchain2:
                                 with open(self.path_blockchain, "ab+") as file2:
                                     pickle.dump(block, file2)
+        
         Helper().create_hash('data/blockchain.dat')
         server.send_blockchain_data()
         server.send_blockchain_tamper_data()
