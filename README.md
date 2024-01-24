@@ -1,4 +1,5 @@
 # Goodchain README
+Final Assignment of the minor "Blockchain". 
 
 ## Installation requirements
 1. install python 
