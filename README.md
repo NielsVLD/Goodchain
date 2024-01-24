@@ -11,7 +11,3 @@
 3. To have more nodes, change the number from 2 to any number
 4. Go into Docker desktop and use the CLI from the running docker container
 5. Should be under container group goodchain.
-
-
-## TODO
-1. Error while trying to send coins to a user that does not exist.
